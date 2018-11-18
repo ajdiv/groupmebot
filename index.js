@@ -7,7 +7,10 @@ cool        = require('cool-ascii-faces');
 bot         = require('./bot.js');
 thesaurus   = require('./thesaurusSvc');
 
-require('dotenv').config({ silent: process.env.NODE_ENV === 'production' });
+if (process.env.NODE_ENV !== "production") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
 
 router = new director.http.Router({
   '/' : {
