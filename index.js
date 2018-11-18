@@ -7,6 +7,8 @@ cool        = require('cool-ascii-faces');
 bot         = require('./bot.js');
 thesaurus   = require('./thesaurusSvc');
 
+require('dotenv').config();
+
 router = new director.http.Router({
   '/' : {
     post: bot.respond,
@@ -30,10 +32,11 @@ port = Number(process.env.PORT || 5000);
 server.listen(port);
 
 function ping() {
-  this.res.writeHead(200);  
-  thesaurus.thesaurize().then(function(res) {
-    this.res.end(JSON.stringify(res));
+  var response = this.res;
+  response.writeHead(200);  
+  thesaurus.thesaurize('test').then(function(res) {
+    response.end(JSON.stringify(res));
   }).catch(function(err) {
-    this.res.end(res);
+    response.end(res);
   });
 }

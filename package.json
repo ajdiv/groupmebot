@@ -9,6 +9,7 @@
   "dependencies": {
     "cool-ascii-faces": "^1.3.4",
     "director": "^1.2.8",
+    "dotenv": "^6.1.0",
     "request": "^2.88.0",
     "requestify": "^0.2.5"
   },
