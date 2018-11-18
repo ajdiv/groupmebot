@@ -31,9 +31,9 @@ server.listen(port);
 
 function ping() {
   this.res.writeHead(200);  
-  thesaurus.thesaurize().then(res => {
+  thesaurus.thesaurize().then(function(res) {
     this.res.end(JSON.stringify(res));
-  }).catch(res => {
+  }).catch(function(err) {
     this.res.end(res);
   });
 }
