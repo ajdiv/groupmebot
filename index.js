@@ -7,7 +7,7 @@ cool        = require('cool-ascii-faces');
 bot         = require('./bot.js');
 thesaurus   = require('./thesaurusSvc');
 
-require('dotenv').config()
+//require('dotenv').config()
 
 router = new director.http.Router({
   '/' : {
