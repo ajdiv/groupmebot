@@ -39,12 +39,13 @@ server.listen(port);
 function ping() {
   var response = this.res;
   response.writeHead(200);  
-  thesaurus.thesaurize('test', function(res) {
-    var result = (JSON.stringify(res));
+
+  gme.getLastMessageText(function(res){
+    var result = res;
     result += '\n\n';
-    gme.getLastMessageText(function(res){
-      result += res;
+    thesaurus.thesaurize(res, function(res) {
+      result += (JSON.stringify(res));
       response.end(result);
-    })
+    });
   });
 }

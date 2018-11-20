@@ -9,6 +9,12 @@ function thesaurize(word, callback) {
       return;
     }
     var rawResults = JSON.parse(resp.body);
+    var result = '';
+    if(!rawResults[0].meta){
+      result = 'Could not find any synonyms for ' + word +'. Did you mean any of the following? \n\n';
+      result += JSON.stringify(rawResults);
+      return callback(result);
+    }
     var result = rawResults[0].meta.syns[0];
     return callback(result);
   });

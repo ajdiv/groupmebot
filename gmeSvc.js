@@ -11,7 +11,7 @@ function getLastMessageText(callback) {
       return;
     }
     var rawResults = JSON.parse(res.body);  
-    var result = rawResults.response.messages[0].text;
+    var result = rawResults.response.messages[1].text;
     return callback(result);
   });
 }
