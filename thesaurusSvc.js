@@ -5,7 +5,7 @@ function thesaurize(word, callback) {
   var url = 'https://www.dictionaryapi.com/api/v3/references/thesaurus/json/' + word + '?key=' + apiKey;
   request(url, function (error, resp) {
     if (error) {
-      callback(error.code + ": An error has occured connecting to the thesaurus.");
+      callback(error.code + ": An error has occured connecting to the thesaurus: " + error);
       return;
     }
     var rawResults = JSON.parse(resp.body);
