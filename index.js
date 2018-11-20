@@ -6,6 +6,8 @@ director    = require('director');
 cool        = require('cool-ascii-faces');
 bot         = require('./bot.js');
 thesaurus   = require('./thesaurusSvc');
+gme         = require('./gmeSvc');
+requestify  = require('requestify'); 
 
 if (process.env.NODE_ENV !== "production") {
   const dotenv = require("dotenv");
@@ -38,7 +40,12 @@ function ping() {
   var response = this.res;
   response.writeHead(200);  
   thesaurus.thesaurize('test').then(function(res) {
-    response.end(JSON.stringify(res));
+    var result = (JSON.stringify(res));
+    result += '\n\n';
+    gme.getLastMessageText().then(function(res){
+      result += res;
+      response.end(result);
+    })
   }).catch(function(err) {
     response.end(res);
   });

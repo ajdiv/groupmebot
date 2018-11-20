@@ -2,7 +2,7 @@ var requestify = require('requestify');
 
 function thesaurize(word) {
   var apiKey = process.env.THESAURUS_API_KEY;
-  if (!apiKey) throw "Invalid API Key";
+  if (!apiKey) throw "Invalid Thesaurus API Key";
 
   return requestify.get('https://www.dictionaryapi.com/api/v3/references/thesaurus/json/'+ word +'?key=' + apiKey).then(function(resp) {
   var rawResults = JSON.parse(resp.body);  
