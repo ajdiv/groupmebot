@@ -1,6 +1,7 @@
 var HTTPS = require('https');
 var cool = require('cool-ascii-faces');
 
+// Hard-coded botId is the Test Dev GroupMe bot
 var botID = process.env.BOT_ID || '6cc97c95a3c1d4340ea13bbc00';
 var options = getRequestOptions();
 
