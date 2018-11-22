@@ -16,7 +16,7 @@ function thesaurize(phrase, callback) {
       var syn = pickRandomWord(resultArrays[i]);
       result += syn + ' ';
     }
-    callback(result);
+    callback(result.trim());
   });
 
 };
@@ -37,6 +37,10 @@ function parseSentence(sentence) {
 };
 
 function createApiPromise(word) {
+  if(checkWordBlacklisted(word)){
+    return Promise.resolve([word]);
+  } 
+
   var apiKey = process.env.THESAURUS_API_KEY;
   var url = 'https://www.dictionaryapi.com/api/v3/references/thesaurus/json/' + word + '?key=' + apiKey;
   var promise = new Promise(function(resolve, reject) {
@@ -58,5 +62,17 @@ function createApiPromise(word) {
   return promise;
 };
 
+function checkWordBlacklisted(word){
+
+  // These must all be lowercase
+  var blackListArr = [
+    "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"
+  ];
+
+  var isCommonWord = blackListArr.includes(word);
+  var isProperNoun = word[0] === word[0].toUpperCase();
+
+  return isCommonWord || isProperNoun;
+}
+
 exports.thesaurize = thesaurize;
-exports.parseSentence = parseSentence;
