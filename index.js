@@ -43,7 +43,7 @@ function ping() {
   gme.getLastMessageText(function(res){
     var result = res;
     result += '\n\n';
-    thesaurus.thesaurize(res, function(res) {
+    thesaurus.thesaurize("The bear is talking to the man", function(res) {
       result += (JSON.stringify(res));
       response.end(result);
     });

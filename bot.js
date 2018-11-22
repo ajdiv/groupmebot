@@ -1,5 +1,7 @@
-var HTTPS = require('https');
-var cool = require('cool-ascii-faces');
+var HTTPS   = require('https');
+var cool    = require('cool-ascii-faces');
+thesaurus   = require('./thesaurusSvc');
+gme         = require('./gmeSvc');
 
 // Hard-coded botId is the Test Dev GroupMe bot
 var botID = process.env.BOT_ID || '6cc97c95a3c1d4340ea13bbc00';
@@ -36,9 +38,14 @@ function postCoolGuyMessage(callback) {
 }
 
 function postThesaurizeMessage(callback) {
-  var botResponse = cool() + 'THESAURUS';
-  postBotResults(botResponse);
-  return callback(botResponse);
+  gme.getLastMessageText(function(res){
+    thesaurus.thesaurize(res, function(res) {
+      var botResponse = (JSON.stringify(res));
+      postBotResults(botResponse);
+      //postBotResults("walked"); //COMMENT AFTER TESTING
+      return callback(botResponse);
+    });
+  });
 };
 
 function getRequestOptions() {
