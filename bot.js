@@ -32,7 +32,7 @@ function respond() {
 }
 
 function postCoolGuyMessage(callback) {
-  var botResponse = cool() + 'COOL';
+  var botResponse = cool();
   postBotResults(botResponse);
   return callback(botResponse);
 }
