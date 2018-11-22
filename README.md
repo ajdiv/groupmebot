@@ -12,8 +12,7 @@ This project is for a GroupMe chatbot among an internal group of friends.
 
 ## How To Run:<a name="instructions"></a>
 
-/cool guy (returns ASCII emoticon)
-/thesaurus (returns synonym of previous message)
+COMING SOON
 
 ## Features:<a name="features"></a>
 
