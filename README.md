@@ -17,4 +17,5 @@ COMING SOON
 ## Features:<a name="features"></a>
 
 /cool guy (returns ASCII emoticon)
+
 /thesaurus (returns synonym of previous message)
