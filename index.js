@@ -43,7 +43,7 @@ function ping() {
   gme.getLastMessageText(function(res){
     var result = res;
     result += '\n\n';
-    var testStr = "I'm gay";
+    var testStr = "new test for deployment";
     result += testStr;
     result += '\n\n';
     thesaurus.thesaurize(testStr, function(res) {
