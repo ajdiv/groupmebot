@@ -55,6 +55,9 @@ function createApiPromise(word) {
         result += JSON.stringify(rawResults);
         resolve(result);
       }
+      if(!rawResults[0] || !rawResults[0].meta || !rawResults[0].meta.syns) {
+        return Promise.resolve([word]);
+      }
       var result = rawResults[0].meta.syns[0];
       resolve(result);
     });
