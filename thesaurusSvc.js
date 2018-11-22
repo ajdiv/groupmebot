@@ -6,6 +6,7 @@ function thesaurize(phrase, callback) {
 
   for(var i = 0; i < wordArr.length;i++){
     var word = wordArr[i];
+    console.log("Word: " + word);
     var promise = createApiPromise(word);
     promiseArr.push(promise);
   }
