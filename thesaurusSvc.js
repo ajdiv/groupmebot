@@ -50,13 +50,12 @@ function createApiPromise(word) {
       }
       var rawResults = JSON.parse(resp.body);
       var result = '';
-      if (!rawResults[0].meta) {
-        result = 'Could not find any synonyms for ' + word + '. Did you mean any of the following? \n\n';
-        result += JSON.stringify(rawResults);
-        resolve(result);
+      if (!rawResults[0].meta && Object.prototype.toString.call(rawResults) === '[object Array]') {
+        result = pickRandomWord(rawResults);
+        return resolve([result]);
       }
       if(!rawResults[0] || !rawResults[0].meta || !rawResults[0].meta.syns) {
-        return Promise.resolve([word]);
+        return resolve([word]);
       }
       var result = rawResults[0].meta.syns[0];
       resolve(result);
