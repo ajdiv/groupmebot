@@ -19,3 +19,6 @@ COMING SOON
 /cool guy (returns ASCII emoticon)
 
 /thesaurus (returns synonym of previous message)
+
+COMING SOON:
+@here - mimics Slack functionality of tagging every member of the chat
