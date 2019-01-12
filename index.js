@@ -11,7 +11,7 @@ var request = require('request');
 
 if (process.env.NODE_ENV !== "production") {
   const dotenv = require("dotenv");
-  dotenv.config();
+  dotenv.config({path:'env'});
 }
 
 router = new director.http.Router({
