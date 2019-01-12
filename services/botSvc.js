@@ -4,14 +4,14 @@ thesaurus   = require('./thesaurusSvc');
 gme         = require('./gmeSvc');
 
 // Hard-coded botId is the Test Dev GroupMe bot
-var botID = process.env.BOT_ID || '6cc97c95a3c1d4340ea13bbc00';
+var botID = process.env.BOT_ID;
 var options = getRequestOptions();
 
 function respond() {
   var request = JSON.parse(this.req.chunks[0]);
   var coolGuyRegex = /^\/cool guy$/;
   var thesaurusRegex = /^\/thesaurize$/;
-
+  
   var response = this.res;
 
   if (request.text && coolGuyRegex.test(request.text)) {
