@@ -1,4 +1,5 @@
 var request = require('request');
+var textUtils = require('../utilities/textUtilities');
 
 function thesaurize(phrase, callback) {
   var wordArr = parseSentence(phrase);
@@ -14,17 +15,12 @@ function thesaurize(phrase, callback) {
   Promise.all(promiseArr).then(function(resultArrays){
     var result = '';
     for(var i = 0; i < resultArrays.length; i++){
-      var syn = pickRandomWord(resultArrays[i]);
+      var syn = textUtils.pickRandomWord(resultArrays[i]);
       result += syn + ' ';
     }
     callback(result.trim());
   });
 
-};
-
-function pickRandomWord(synArr) {
-  var result = synArr[Math.floor(Math.random() * synArr.length)];
-  return result;
 };
 
 function parseSentence(sentence) {
@@ -52,7 +48,7 @@ function createApiPromise(word) {
       var rawResults = JSON.parse(resp.body);
       var result = '';
       if (!rawResults[0].meta && Object.prototype.toString.call(rawResults) === '[object Array]') {
-        result = pickRandomWord(rawResults);
+        result = textUtils.pickRandomWord(rawResults);
         return resolve([result]);
       }
       if(!rawResults[0] || !rawResults[0].meta || !rawResults[0].meta.syns) {
