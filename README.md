@@ -19,3 +19,7 @@ COMING SOON
 /cool guy (returns ASCII emoticon)
 
 /thesaurus (returns synonym of previous message)
+
+## IMPORTANT COMMANDS:<a name="cmds"></a>
+npm run start (runs the project)
+npm test (runs all unit tests)

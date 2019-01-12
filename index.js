@@ -4,14 +4,13 @@ http        = require('http');
 https        = require('https');
 director    = require('director');
 cool        = require('cool-ascii-faces');
-bot         = require('./bot.js');
-thesaurus   = require('./thesaurusSvc');
-gme         = require('./gmeSvc');
-var request = require('request');
+bot         = require('./services/botSvc.js');
+thesaurus   = require('./services/thesaurusSvc');
+gme         = require('./services/gmeSvc');
 
 if (process.env.NODE_ENV !== "production") {
   const dotenv = require("dotenv");
-  dotenv.config();
+  dotenv.config({path:'config/env'});
 }
 
 router = new director.http.Router({
@@ -43,7 +42,7 @@ function ping() {
   gme.getLastMessageText(function(res){
     var result = res;
     result += '\n\n';
-    var testStr = "new test for deployment";
+    var testStr = "Joe Addamo is my best friend";
     result += testStr;
     result += '\n\n';
     thesaurus.thesaurize(testStr, function(res) {
