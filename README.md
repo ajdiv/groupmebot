@@ -23,3 +23,7 @@ COMING SOON
 ## IMPORTANT COMMANDS:<a name="cmds"></a>
 npm run start (runs the project)
 npm test (runs all unit tests)
+
+
+COMING SOON:
+@here - mimics Slack functionality of tagging every member of the chat
