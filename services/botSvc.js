@@ -4,13 +4,13 @@ thesaurus   = require('./thesaurusSvc');
 gme         = require('./gmeSvc');
 
 // Hard-coded botId is the Test Dev GroupMe bot
-var botID = process.env.BOT_ID;
 var options = getRequestOptions();
 
 function respond() {
   var request = JSON.parse(this.req.chunks[0]);
   var coolGuyRegex = /^\/cool guy$/;
   var thesaurusRegex = /^\/thesaurize$/;
+  var hereRegex = /@here$/;
   
   var response = this.res;
 
@@ -22,6 +22,11 @@ function respond() {
   } else if (request.text && thesaurusRegex.test(request.text)) {
     this.res.writeHead(200);
     postThesaurizeMessage(function (results) {
+      response.end(results);
+    });
+  } else if (request.text && hereRegex.test(request.text)) {
+    this.res.writeHead(200);
+    tagEveryone(function (results) {
       response.end(results);
     });
   } else {
@@ -42,9 +47,18 @@ function postThesaurizeMessage(callback) {
     thesaurus.thesaurize(res, function(res) {
       var botResponse = (JSON.stringify(res));
       postBotResults(botResponse);
-      //postBotResults("walked"); //COMMENT AFTER TESTING
       return callback(botResponse);
     });
+  });
+};
+
+function tagEveryone(callback) {
+  var botText = ""; //Maybe handle space elsewhere but leave at end for now
+  //var botText = "Tagging everyone "; //Maybe handle space elsewhere but leave at end for now
+  gme.tagEveryone(botText, function(res){
+    var botResponse = (JSON.stringify(res));
+      postBotResults(res.text, res.attachments);
+      return callback(botResponse);
   });
 };
 
@@ -56,10 +70,12 @@ function getRequestOptions() {
   };
 };
 
-function getBotBody(botResponse) {
+function getBotBody(botResponse, attachments) {
+  var botID = process.env.BOT_ID;
   return {
     "bot_id": botID,
-    "text": botResponse
+    "text": botResponse,
+    "attachments": attachments
   };
 };
 
@@ -84,8 +100,9 @@ function configureBotReqObj(botReq) {
   });
 }
 
-function postBotResults(botResponse) {
-  body = getBotBody(botResponse);
+function postBotResults(botResponse, attachmentsArr) {
+  var botID = process.env.BOT_ID;
+  body = getBotBody(botResponse, attachmentsArr);
   botReq = getBotReqObj();
   console.log('sending ' + botResponse + ' to ' + botID);
   var results = JSON.stringify(body);
