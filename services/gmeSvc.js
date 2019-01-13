@@ -76,7 +76,7 @@ function getAllMembers(introText, members) {
       results.text += ' @' + name;
     }
     lociIndex = results.text.length + 1; //to account for the space
-    results.attachment.user_ids.push(member.id);
+    results.attachment.user_ids.push(member.user_id);
     results.attachment.loci.push(loci);
   }
   return results;
