@@ -20,10 +20,12 @@ COMING SOON
 
 /thesaurus (returns synonym of previous message)
 
+@here (tags everyone in the group)
+
 ## IMPORTANT COMMANDS:<a name="cmds"></a>
 npm run start (runs the project)
 npm test (runs all unit tests)
 
 
 COMING SOON:
-@here - mimics Slack functionality of tagging every member of the chat
+Give suggestions!
