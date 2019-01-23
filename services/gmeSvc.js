@@ -73,7 +73,8 @@ function addSpew(userId, callback) {
       spew.spewCount++;      
     }
     return spew.save().then((res) => {
-      return callback(`You spewed ${res.spewCount} times`);
+      var word = res.spewCount === 1 ? 'time' : 'times';
+      return callback(`You spewed ${res.spewCount} ${word}`);
     });
   });
 }
