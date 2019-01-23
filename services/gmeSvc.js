@@ -1,5 +1,6 @@
-var request = require('request');
-const groupMeUrl = 'https://api.groupme.com/v3/groups/';
+var request       = require('request');
+const groupMeUrl  = 'https://api.groupme.com/v3/groups/';
+Spew              = require('../models/spew.model');
 
 function getLastMessageText(callback) {
   const groupId = process.env.GROUP_ID;
@@ -57,6 +58,27 @@ function tagEveryone(introText, callback) {
   });
 }
 
+function addSpew(userId, callback) {
+  var gmeUserId = parseInt(userId);
+  Spew.findOne({ gmeUserId: gmeUserId }).then(result => {
+    let spew;
+    if (!result) {
+      spew = new Spew({
+        gmeUserId: gmeUserId,
+        spewCount: 1,
+        spewDate: new Date()
+      });
+    } else {
+      spew = result;
+      spew.spewCount++;      
+    }
+    return spew.save().then((res) => {
+      var word = res.spewCount === 1 ? 'time' : 'times';
+      return callback(`You spewed ${res.spewCount} ${word}`);
+    });
+  });
+}
+
 function getAllMembers(introText, members) {
   var lociIndex = introText.length; // This corresponds to the first "x" in the loci
   var results = {
@@ -84,5 +106,6 @@ function getAllMembers(introText, members) {
 
 module.exports = {
   getLastMessageText: getLastMessageText,
-  tagEveryone: tagEveryone
+  tagEveryone: tagEveryone,
+  addSpew: addSpew
 };

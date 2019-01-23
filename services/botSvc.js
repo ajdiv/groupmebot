@@ -1,7 +1,7 @@
-var HTTPS   = require('https');
-var cool    = require('cool-ascii-faces');
-thesaurus   = require('./thesaurusSvc');
-gme         = require('./gmeSvc');
+var HTTPS = require('https');
+var cool = require('cool-ascii-faces');
+thesaurus = require('./thesaurusSvc');
+gme = require('./gmeSvc');
 
 // Hard-coded botId is the Test Dev GroupMe bot
 var options = getRequestOptions();
@@ -11,8 +11,16 @@ function respond() {
   var coolGuyRegex = /^\/cool guy$/;
   var thesaurusRegex = /^\/thesaurize$/;
   var hereRegex = /@here$/;
-  
+  var spew = /^\/spew$/;
+
   var response = this.res;
+
+  if (request.user_id && spew.test(request.text)) {
+    this.res.writeHead(200);
+    addSpew(request.user_id, function (results) {
+      response.end(results);
+    });
+  }
 
   if (request.text && coolGuyRegex.test(request.text)) {
     this.res.writeHead(200);
@@ -43,8 +51,8 @@ function postCoolGuyMessage(callback) {
 }
 
 function postThesaurizeMessage(callback) {
-  gme.getLastMessageText(function(res){
-    thesaurus.thesaurize(res, function(res) {
+  gme.getLastMessageText(function (res) {
+    thesaurus.thesaurize(res, function (res) {
       var botResponse = (JSON.stringify(res));
       postBotResults(botResponse);
       return callback(botResponse);
@@ -52,13 +60,21 @@ function postThesaurizeMessage(callback) {
   });
 };
 
+function addSpew(userId, callback) {
+  gme.addSpew(userId, function (res) {    
+    var botResponse = (JSON.stringify(res));
+    postBotResults(botResponse);
+    return callback(botResponse);
+  });
+};
+
 function tagEveryone(callback) {
   var botText = ""; //Maybe handle space elsewhere but leave at end for now
   //var botText = "Tagging everyone "; //Maybe handle space elsewhere but leave at end for now
-  gme.tagEveryone(botText, function(res){
+  gme.tagEveryone(botText, function (res) {
     var botResponse = (JSON.stringify(res));
-      postBotResults(res.text, res.attachments);
-      return callback(botResponse);
+    postBotResults(res.text, res.attachments);
+    return callback(botResponse);
   });
 };
 
@@ -108,4 +124,5 @@ function postBotResults(botResponse, attachmentsArr) {
   var results = JSON.stringify(body);
   botReq.end(results);
 };
+
 exports.respond = respond;
