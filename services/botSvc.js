@@ -14,6 +14,9 @@ function respond() {
   var spew = /^\/spew$/;
 
   var response = this.res;
+  if(request.text){
+    request.text = request.text.trim();
+  }
 
   if (request.user_id && spew.test(request.text)) {
     this.res.writeHead(200);
