@@ -15,12 +15,12 @@ function respond() {
 
   var response = this.res;
 
-  if (request.user_id && spew.test(request.text)) {
-    this.res.writeHead(200);
-    addSpew(request.user_id, function (results) {
-      response.end(results);
-    });
-  }
+  // if (request.user_id && spew.test(request.text)) {
+  //   this.res.writeHead(200);
+  //   addSpew(request.user_id, function (results) {
+  //     response.end(results);
+  //   });
+  // }
 
   if (request.text && coolGuyRegex.test(request.text)) {
     this.res.writeHead(200);
