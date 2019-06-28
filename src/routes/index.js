@@ -1,19 +1,23 @@
+//#region Load Modules, Services, and Models
 var http, director, cool, bot, router, server, port;
 
+// 3rd Part Libraries 
 http = require('http');
 https = require('https');
 director = require('director');
-
 cool = require('cool-ascii-faces');
-bot = require('./services/botSvc.js');
-thesaurus = require('./services/thesaurusSvc');
-gme = require('./services/gmeSvc');
-
 mongoose = require('mongoose');
 
-User = require('./models/user.model');
-Spew = require('./models/spew.model');
-DailyUserPostCounter = require('./models/dailyUserPostCounter.model');
+// Services
+bot = require('../services/botSvc')
+thesaurus = require('../services/thesaurusSvc');
+gme = require('../services/gmeSvc');
+
+// Models
+User = require('../models/user.model');
+Spew = require('../models/spew.model');
+DailyUserPostCounter = require('../models/dailyUserPostCounter.model');
+//#endregion
 
 if (process.env.NODE_ENV !== "production") {
   const dotenv = require("dotenv");
@@ -68,8 +72,8 @@ function ping() {
     } else {
       result.messageCount++;
       return result.save().then((res) => {
-          return response.end(`Updated user with message counter: ${result.messageCount}`);
-        });
+        return response.end(`Updated user with message counter: ${result.messageCount}`);
+      });
     }
   });
 
