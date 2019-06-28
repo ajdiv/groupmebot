@@ -5,7 +5,6 @@ gme = require('./gmeSvc');
 
 // Hard-coded botId is the Test Dev GroupMe bot
 var options = getRequestOptions();
-
 function respond() {
   var request = JSON.parse(this.req.chunks[0]);
   var coolGuyRegex = /^\/cool guy$/;
