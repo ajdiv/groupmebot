@@ -13,6 +13,7 @@ mongoose = require('mongoose');
 
 User = require('./models/user.model');
 Spew = require('./models/spew.model');
+DailyUserPostCounter = require('./models/dailyUserPostCounter.model');
 
 if (process.env.NODE_ENV !== "production") {
   const dotenv = require("dotenv");
@@ -52,20 +53,22 @@ function ping() {
   response.writeHead(200);
 
   var gmeId = 2; //TEST ONLY
-  Spew.findOne({ gmeUserId: gmeId }).then(result => {
+  var groupId = 2; //TEST ONLY
+  DailyUserPostCounter.findOne({ gmeUserId: gmeId }).then(result => {
     if (!result) {
-      let spew = new Spew({
+      let counter = new DailyUserPostCounter({
         gmeUserId: gmeId,
-        spewCount: 1,
-        spewDate: new Date()
+        gmeGroupId: groupId,
+        messageCount: 1,
+        date: new Date()
       });
-      return spew.save().then(res => {
+      return counter.save().then(res => {
         return response.end(`Created new user with id ${res.gmeUserId}`);
       });
     } else {
-      result.spewCount++;
+      result.messageCount++;
       return result.save().then((res) => {
-          return response.end(`Updated user with Spew Count: ${result.spewCount}`);
+          return response.end(`Updated user with message counter: ${result.messageCount}`);
         });
     }
   });
