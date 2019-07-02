@@ -1,6 +1,7 @@
-var request       = require('request');
+import request       = require('request');
+import Spew              = require('../models/spew.model');
+
 const groupMeUrl  = 'https://api.groupme.com/v3/groups/';
-Spew              = require('../models/spew.model');
 
 function getLastMessageText(callback) {
   const groupId = process.env.GROUP_ID;
@@ -9,7 +10,7 @@ function getLastMessageText(callback) {
     + '/messages' + '?token=' + accessToken;
   request(url, function (error, res) {
     if (error) {
-      callback(error.code + ": An error has occured connecting to the GroupMe API.");
+      callback(error.code + ": An error has occurred connecting to the GroupMe API.");
       return;
     }
     var rawResults = JSON.parse(res.body);
@@ -41,7 +42,7 @@ function tagEveryone(introText, callback) {
   var url = groupMeUrl + groupId + '?token=' + accessToken;
   request(url, function (error, res) {
     if (error) {
-      callback(error.code + ": An error has occured connecting to the GroupMe API.");
+      callback(error.code + ": An error has occurred connecting to the GroupMe API.");
       return;
     }
     var rawResults = JSON.parse(res.body);
@@ -104,7 +105,7 @@ function getAllMembers(introText, members) {
   return results;
 }
 
-module.exports = {
+export = {
   getLastMessageText: getLastMessageText,
   tagEveryone: tagEveryone,
   addSpew: addSpew
