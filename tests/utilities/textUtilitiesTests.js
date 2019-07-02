@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var svc = require('../../utilities/textUtilities');
+var svc = require('../../src/utilities/textUtilities');
 
 
 describe('Word Randomization Tests', function () {

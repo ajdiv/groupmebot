@@ -1,54 +1,50 @@
-var HTTPS = require('https');
-var cool = require('cool-ascii-faces');
-thesaurus = require('./thesaurusSvc');
-gme = require('./gmeSvc');
+import HTTPS = require('https');
+import cool = require('cool-ascii-faces');
+import thesaurus = require('./thesaurusSvc');
+import gme = require('./gmeSvc');
 
 // Hard-coded botId is the Test Dev GroupMe bot
 var options = getRequestOptions();
-function respond() {
-  var request = JSON.parse(this.req.chunks[0]);
+function respond(request, response) {
+  var request = request.body;
   var coolGuyRegex = /^\/cool guy$/;
   var thesaurusRegex = /^\/thesaurize$/;
   var hereRegex = /@here$/;
   var spew = /^\/spew$/;
-
-  var response = this.res;
   if(request.text){
     request.text = request.text.trim();
   }
 
   if (request.user_id && spew.test(request.text)) {
-    this.res.writeHead(200);
+    response.writeHead(200);
     addSpew(request.user_id, function (results) {
       response.end(results);
     });
-  }
-
-  if (request.text && coolGuyRegex.test(request.text)) {
-    this.res.writeHead(200);
+  } else  if (request.text && coolGuyRegex.test(request.text)) {
+    response.writeHead(200);
     postCoolGuyMessage(function (results) {
       response.end(results);
     });
   } else if (request.text && thesaurusRegex.test(request.text)) {
-    this.res.writeHead(200);
+    response.writeHead(200);
     postThesaurizeMessage(function (results) {
       response.end(results);
     });
   } else if (request.text && hereRegex.test(request.text)) {
-    this.res.writeHead(200);
+    response.writeHead(200);
     tagEveryone(function (results) {
       response.end(results);
     });
   } else {
     console.log("don't care");
-    this.res.writeHead(200);
-    this.res.end();
+    response.writeHead(200);
+    response.end();
   }
 }
 
 function postCoolGuyMessage(callback) {
   var botResponse = cool();
-  postBotResults(botResponse);
+  postBotResults(botResponse, null);
   return callback(botResponse);
 }
 
@@ -56,7 +52,7 @@ function postThesaurizeMessage(callback) {
   gme.getLastMessageText(function (res) {
     thesaurus.thesaurize(res, function (res) {
       var botResponse = (JSON.stringify(res));
-      postBotResults(botResponse);
+      postBotResults(botResponse, null);
       return callback(botResponse);
     });
   });
@@ -65,7 +61,7 @@ function postThesaurizeMessage(callback) {
 function addSpew(userId, callback) {
   gme.addSpew(userId, function (res) {    
     var botResponse = (JSON.stringify(res));
-    postBotResults(botResponse);
+    postBotResults(botResponse, null);
     return callback(botResponse);
   });
 };
@@ -120,11 +116,13 @@ function configureBotReqObj(botReq) {
 
 function postBotResults(botResponse, attachmentsArr) {
   var botID = process.env.BOT_ID;
-  body = getBotBody(botResponse, attachmentsArr);
-  botReq = getBotReqObj();
+  var body = getBotBody(botResponse, attachmentsArr);
+  var botReq = getBotReqObj();
   console.log('sending ' + botResponse + ' to ' + botID);
   var results = JSON.stringify(body);
   botReq.end(results);
 };
 
-exports.respond = respond;
+export = {
+  respond: respond
+}
