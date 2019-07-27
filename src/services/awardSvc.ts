@@ -52,16 +52,15 @@ function getAwards(gmeGroupId, memberArr) {
 function createAwardsObj(awardArr, memberArr) {
     var result = "Here are the rankings: ";
 
-    for(var i = 0; i < awardArr.length; i++){
+    for (var i = 0; i < awardArr.length; i++) {
         var person = awardArr[i];
         var match = _.find(memberArr, x => x.user_id === person.gmeUserId.toString());
         if (match) {
             result += match.nickname + " (" + person.messageCount + ")";
-        }
-
-        // If we have more coming, then add some periods. This is until we can find out new line characters
-        if(i !== 0 && i !== awardArr.length - 1 && person.gmeUserId !== 0){
-            result += "..........";
+            // If we have more coming, then add some periods. This is until we can find out new line characters
+            if (i !== awardArr.length - 1 && person.gmeUserId !== 0) {
+                result += "..........";
+            }
         }
     }
     return result;
