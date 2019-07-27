@@ -10,6 +10,6 @@ function pickRandomWord(synArr) {
     return result;
   };
 
-  module.exports = {
+export = {
     pickRandomWord: pickRandomWord
   };

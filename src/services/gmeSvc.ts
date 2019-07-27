@@ -1,6 +1,7 @@
-var request       = require('request');
-const groupMeUrl  = 'https://api.groupme.com/v3/groups/';
-Spew              = require('../models/spew.model');
+import request = require('request-promise');
+import Spew = require('../models/spew.model');
+
+const groupMeUrl = 'https://api.groupme.com/v3/groups/';
 
 function getLastMessageText(callback) {
   const groupId = process.env.GROUP_ID;
@@ -9,7 +10,7 @@ function getLastMessageText(callback) {
     + '/messages' + '?token=' + accessToken;
   request(url, function (error, res) {
     if (error) {
-      callback(error.code + ": An error has occured connecting to the GroupMe API.");
+      callback(error.code + ": An error has occurred connecting to the GroupMe API.");
       return;
     }
     var rawResults = JSON.parse(res.body);
@@ -36,16 +37,8 @@ function getLastMessageText(callback) {
 //   }
 // ]
 function tagEveryone(introText, callback) {
-  var groupId = process.env.GROUP_ID;
-  const accessToken = process.env.ACCESS_TOKEN;
-  var url = groupMeUrl + groupId + '?token=' + accessToken;
-  request(url, function (error, res) {
-    if (error) {
-      callback(error.code + ": An error has occured connecting to the GroupMe API.");
-      return;
-    }
-    var rawResults = JSON.parse(res.body);
-    var memberRes = getAllMembers(introText, rawResults.response.members);
+  return getAllUsersInCurrentGroup().then(members => {
+    var memberRes = getAllMembers(introText, members);
     var result = {
       text: memberRes.text,
       attachments: [{
@@ -55,6 +48,10 @@ function tagEveryone(introText, callback) {
       }]
     }
     return callback(result);
+  })
+  .catch(error => {
+    callback(error.code + ": An error has occurred connecting to the GroupMe API.");
+    return;
   });
 }
 
@@ -70,7 +67,7 @@ function addSpew(userId, callback) {
       });
     } else {
       spew = result;
-      spew.spewCount++;      
+      spew.spewCount++;
     }
     return spew.save().then((res) => {
       var word = res.spewCount === 1 ? 'time' : 'times';
@@ -104,8 +101,19 @@ function getAllMembers(introText, members) {
   return results;
 }
 
-module.exports = {
+function getAllUsersInCurrentGroup(): Promise<any> {
+  var groupId = process.env.GROUP_ID;
+  const accessToken = process.env.ACCESS_TOKEN;
+  var url = groupMeUrl + groupId + '?token=' + accessToken;
+  return request(url).then(resStr => {    
+    var resJson = JSON.parse(resStr);
+    return resJson.response.members;
+  });
+}
+
+export = {
   getLastMessageText: getLastMessageText,
   tagEveryone: tagEveryone,
-  addSpew: addSpew
+  addSpew: addSpew,
+  getAllUsersInCurrentGroup: getAllUsersInCurrentGroup
 };

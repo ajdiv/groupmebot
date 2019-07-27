@@ -1,9 +1,9 @@
-var request = require('request');
-var textUtils = require('../utilities/textUtilities');
+import request = require('request');
+import textUtils = require('../utilities/textUtilities');
 
 function thesaurize(phrase, callback) {
   var wordArr = parseSentence(phrase);
-  promiseArr = [];
+  var promiseArr = [];
 
   for(var i = 0; i < wordArr.length;i++){
     var word = wordArr[i];
@@ -43,7 +43,7 @@ function createApiPromise(word) {
   var promise = new Promise(function(resolve, reject) {
     request({ url: url, rejectUnauthorized: false }, function (error, resp) {
       if (error) {
-        reject(error.code + ": An error has occured connecting to the thesaurus: " + error);
+        reject(error.code + ": An error has occurred connecting to the thesaurus: " + error);
       }
       var rawResults = JSON.parse(resp.body);
       var result = '';
@@ -54,7 +54,7 @@ function createApiPromise(word) {
       if(!rawResults[0] || !rawResults[0].meta || !rawResults[0].meta.syns) {
         return resolve([word]);
       }
-      var result = rawResults[0].meta.syns[0];
+      result = rawResults[0].meta.syns[0];
       resolve(result);
     });
   });
@@ -75,4 +75,6 @@ function checkWordBlacklisted(word){
   return isCommonWord || isProperNoun;
 }
 
-exports.thesaurize = thesaurize;
+export = {
+  thesaurize : thesaurize
+}
