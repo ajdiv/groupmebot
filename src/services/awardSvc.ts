@@ -60,7 +60,7 @@ function createAwardsObj(awardArr, memberArr) {
         }
 
         // If we have more coming, then add some periods. This is until we can find out new line characters
-        if(i !== 0 && i !== awardArr.length - 1){
+        if(i !== 0 && i !== awardArr.length - 1 && person.gmeUserId !== 0){
             result += "..........";
         }
     }
