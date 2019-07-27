@@ -2,6 +2,7 @@ import HTTPS = require('https');
 import cool = require('cool-ascii-faces');
 import thesaurus = require('./thesaurusSvc');
 import gme = require('./gmeSvc');
+import awardsSvc = require('./awardSvc');
 
 // Hard-coded botId is the Test Dev GroupMe bot
 var options = getRequestOptions();
@@ -11,10 +12,17 @@ function respond(request, response) {
   var thesaurusRegex = /^\/thesaurize$/;
   var hereRegex = /@here$/;
   var spew = /^\/spew$/;
+  var awardsRegex = /^\/awards$/;
+
   if(request.text){
     request.text = request.text.trim();
+    if(request.user_id  && request.group_id){
+      awardsSvc.addMsgCounter(request.user_id, request.group_id);
+    }
   }
 
+  // TODO: This needs to move to a factory service
+  // TODO: Move these to promises
   if (request.user_id && spew.test(request.text)) {
     response.writeHead(200);
     addSpew(request.user_id, function (results) {
