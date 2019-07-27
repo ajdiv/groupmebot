@@ -2,6 +2,8 @@ import HTTPS = require('https');
 import cool = require('cool-ascii-faces');
 import thesaurus = require('./thesaurusSvc');
 import gme = require('./gmeSvc');
+import awardsSvc = require('./awardSvc');
+
 
 // Hard-coded botId is the Test Dev GroupMe bot
 var options = getRequestOptions();
@@ -11,35 +13,52 @@ function respond(request, response) {
   var thesaurusRegex = /^\/thesaurize$/;
   var hereRegex = /@here$/;
   var spew = /^\/spew$/;
-  if(request.text){
-    request.text = request.text.trim();
-  }
+  var awardsRegex = /^\/awards$/;
 
-  if (request.user_id && spew.test(request.text)) {
-    response.writeHead(200);
-    addSpew(request.user_id, function (results) {
-      response.end(results);
-    });
-  } else  if (request.text && coolGuyRegex.test(request.text)) {
-    response.writeHead(200);
-    postCoolGuyMessage(function (results) {
-      response.end(results);
-    });
-  } else if (request.text && thesaurusRegex.test(request.text)) {
-    response.writeHead(200);
-    postThesaurizeMessage(function (results) {
-      response.end(results);
-    });
-  } else if (request.text && hereRegex.test(request.text)) {
-    response.writeHead(200);
-    tagEveryone(function (results) {
-      response.end(results);
-    });
-  } else {
-    console.log("don't care");
-    response.writeHead(200);
-    response.end();
+  logMessage(request).then(res => {
+    // TODO: This needs to move to a factory service
+    // TODO: Move these to promises
+    if (request.user_id && spew.test(request.text)) {
+      response.writeHead(200);
+      addSpew(request.user_id, function (results) {
+        response.end(results);
+      });
+    } else if (request.text && coolGuyRegex.test(request.text)) {
+      response.writeHead(200);
+      postCoolGuyMessage(function (results) {
+        response.end(results);
+      });
+    } else if (request.text && thesaurusRegex.test(request.text)) {
+      response.writeHead(200);
+      postThesaurizeMessage(function (results) {
+        response.end(results);
+      });
+    } else if (request.text && hereRegex.test(request.text)) {
+      response.writeHead(200);
+      tagEveryone(function (results) {
+        response.end(results);
+      });
+    } else if (request.text && awardsRegex.test(request.text)) {
+      response.writeHead(200);
+      getAwards(request.group_id, function (results) {
+        response.end(results);
+      });
+    } else {
+      console.log("don't care");
+      response.writeHead(200);
+      response.end();
+    }
+  });
+}
+
+function logMessage(request): Promise<any> {
+  if (request.text) {
+    request.text = request.text.trim();
+    if (request.user_id && request.group_id) {
+      return awardsSvc.addMsgCounter(request.user_id, request.group_id);
+    }
   }
+  return Promise.resolve();
 }
 
 function postCoolGuyMessage(callback) {
@@ -59,7 +78,7 @@ function postThesaurizeMessage(callback) {
 };
 
 function addSpew(userId, callback) {
-  gme.addSpew(userId, function (res) {    
+  gme.addSpew(userId, function (res) {
     var botResponse = (JSON.stringify(res));
     postBotResults(botResponse, null);
     return callback(botResponse);
@@ -73,6 +92,17 @@ function tagEveryone(callback) {
     var botResponse = (JSON.stringify(res));
     postBotResults(res.text, res.attachments);
     return callback(botResponse);
+  });
+};
+
+function getAwards(groupId, callback) {
+  // Get all users in group
+  return gme.getAllUsersInCurrentGroup().then(members => {
+    return awardsSvc.getAwards(groupId, members).then(res => {
+      var botResponse = (JSON.stringify(res));
+      postBotResults(botResponse, null);
+      return callback(botResponse);
+    })
   });
 };
 
