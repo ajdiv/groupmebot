@@ -1,13 +1,15 @@
 import _ = require('lodash');
+import moment = require('moment');
 
 // Models
 import * as DailyUserPostCounter from '../models/dailyUserPostCounter.model';
 
 function addMsgCounter(gmeUserId, gmeGroupId) {
+    
+    if(!gmeUserId) return Promise.resolve();
 
-    var todayRaw = new Date();
-    var today = todayRaw.setHours(0, 0, 0, 0);
-    var tomorrow = todayRaw.setDate(todayRaw.getDate() + 1);
+    var today = moment(new Date()).startOf('day').toDate();
+    var tomorrow = moment(new Date()).add(1,'days').startOf('day').toDate();
 
     //Find existing message counter for today. If doesn't exist, create one
     return DailyUserPostCounter.findOne(
