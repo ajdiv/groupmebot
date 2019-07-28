@@ -23,7 +23,7 @@ function addMsgCounter(gmeUserId, gmeGroupId) {
                     gmeUserId: gmeUserId,
                     gmeGroupId: gmeGroupId,
                     messageCount: 1,
-                    date: today
+                    date: moment().valueOf()
                 });
                 return counter.save();
             } else {
@@ -52,14 +52,12 @@ function getAwards(gmeGroupId, memberArr) {
 }
 
 function createAwardsObj(awardArr, memberArr) {
-    var result = "Here are the rankings: ";
-    // Filter out any nonsense - bots or otherwise
+    var result = "Here's who posted the most today: ";
     var resultArr = [];
-    var numResults = 0;
 
-    awardArr.foreach(person => {
+    awardArr.forEach(person => {
         var match = _.find(memberArr, x => x.user_id === person.gmeUserId.toString());
-        if (match) {
+        if (match) { // Filter out any nonsense - bots or otherwise
             resultArr.push(match.nickname + " (" + person.messageCount + ")");
         }
     });
