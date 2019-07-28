@@ -5,11 +5,11 @@ import moment = require('moment');
 import * as DailyUserPostCounter from '../models/dailyUserPostCounter.model';
 
 function addMsgCounter(gmeUserId, gmeGroupId) {
-    
-    if(!gmeUserId) return Promise.resolve();
+
+    if (!gmeUserId) return Promise.resolve();
 
     var today = moment(new Date()).startOf('day').toDate();
-    var tomorrow = moment(new Date()).add(1,'days').startOf('day').toDate();
+    var tomorrow = moment(new Date()).add(1, 'days').startOf('day').toDate();
 
     //Find existing message counter for today. If doesn't exist, create one
     return DailyUserPostCounter.findOne(
@@ -53,18 +53,25 @@ function getAwards(gmeGroupId, memberArr) {
 
 function createAwardsObj(awardArr, memberArr) {
     var result = "Here are the rankings: ";
+    // Filter out any nonsense - bots or otherwise
+    var resultArr = [];
+    var numResults = 0;
 
-    for (var i = 0; i < awardArr.length; i++) {
-        var person = awardArr[i];
+    awardArr.foreach(person => {
         var match = _.find(memberArr, x => x.user_id === person.gmeUserId.toString());
-        if (match && match.nickname) {
-            result += match.nickname + " (" + person.messageCount + ")";
-            // If we have more coming, then add some periods. This is until we can find out new line characters
-            if (i !== awardArr.length - 1 && person.gmeUserId !== 0) {
-                result += "..........";
-            }
+        if (match) {
+            resultArr.push(match.nickname + " (" + person.messageCount + ")");
+        }
+    });
+
+    for (var i = 0; i < resultArr.length; i++) {
+        result += resultArr[i];
+        // If we are at the end of the array, don't add dots
+        if (i != resultArr.length - 1) {
+            result += "..........";
         }
     }
+
     return result;
 }
 
