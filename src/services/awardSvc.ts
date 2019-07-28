@@ -57,7 +57,7 @@ function createAwardsObj(awardArr, memberArr) {
     for (var i = 0; i < awardArr.length; i++) {
         var person = awardArr[i];
         var match = _.find(memberArr, x => x.user_id === person.gmeUserId.toString());
-        if (match) {
+        if (match && match.nickname) {
             result += match.nickname + " (" + person.messageCount + ")";
             // If we have more coming, then add some periods. This is until we can find out new line characters
             if (i !== awardArr.length - 1 && person.gmeUserId !== 0) {
