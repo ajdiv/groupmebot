@@ -8,16 +8,23 @@ function addMsgCounter(gmeUserId, gmeGroupId) {
 
     if (!gmeUserId) return Promise.resolve();
 
-    // 4AM is the time to start/stop today and tomorrow
-    var today = moment(new Date()).startOf('day').add(4,'hours').toDate();
-    var tomorrow = moment(new Date()).add(1, 'days').startOf('day').add(4,'hours').toDate();
+    // If we are before 4AM, consider 4AM of yesterday the start
+    var now = moment(new Date());
+    var begin;
+    if(now.hour() < 4){
+        begin = now.subtract(1,'days').startOf('day').add(4,'hours').toDate();
+    } else{        
+        begin = now.startOf('day').add(4,'hours').toDate();
+    }
+
+    var end = moment(begin).add(1, 'days').subtract(1, 'milliseconds').toDate();
 
     //Find existing message counter for today. If doesn't exist, create one
     return DailyUserPostCounter.findOne(
         {
             gmeUserId: gmeUserId,
             gmeGroupId: gmeGroupId,
-            date: { $gte: today, $lt: tomorrow }
+            date: { $gte: begin, $lt: end }
         }).then(result => {
             if (!result) {
                 let counter = new DailyUserPostCounter({
