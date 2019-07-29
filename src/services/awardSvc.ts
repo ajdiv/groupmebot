@@ -52,6 +52,8 @@ function getAwards(gmeGroupId, memberArr) {
 }
 
 function createAwardsObj(awardArr, memberArr) {
+    var test = "Local Time: " + moment(new Date()).toDate().toString();
+    return test;
     var result = "Here's who posted the most today: ";
     var resultArr = [];
 
