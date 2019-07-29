@@ -8,15 +8,16 @@ function addMsgCounter(gmeUserId, gmeGroupId) {
 
     if (!gmeUserId) return Promise.resolve();
 
-    var today = moment(new Date()).startOf('day').toDate();
-    var tomorrow = moment(new Date()).add(1, 'days').startOf('day').toDate();
+    var time = getTodayAndTomorrow();
+    var begin = time[0];
+    var end = time[1];
 
     //Find existing message counter for today. If doesn't exist, create one
     return DailyUserPostCounter.findOne(
         {
             gmeUserId: gmeUserId,
             gmeGroupId: gmeGroupId,
-            date: { $gte: today, $lt: tomorrow }
+            date: { $gte: begin, $lt: end }
         }).then(result => {
             if (!result) {
                 let counter = new DailyUserPostCounter({
@@ -29,20 +30,20 @@ function addMsgCounter(gmeUserId, gmeGroupId) {
             } else {
                 result.messageCount++;
                 return result.save();
-            }
+            } 
         });
 }
 
 function getAwards(gmeGroupId, memberArr) {
 
-    var todayRaw = new Date();
-    var today = todayRaw.setHours(0, 0, 0, 0);
-    var tomorrow = todayRaw.setDate(todayRaw.getDate() + 1);
+    var time = getTodayAndTomorrow();
+    var begin = time[0];
+    var end = time[1];
 
     return DailyUserPostCounter.find(
         {
             gmeGroupId: gmeGroupId,
-            date: { $gte: today, $lt: tomorrow }
+            date: { $gte: begin, $lt: end }
         })
         .sort({ messageCount: -1 }).then(results => {
             // Note: there will always be a result at this point, 
@@ -71,6 +72,23 @@ function createAwardsObj(awardArr, memberArr) {
     }
 
     return result;
+}
+
+//TODO: Move this to a utility class
+function getTodayAndTomorrow(){
+
+    // If we are before 4AM, consider 4AM of yesterday the start
+    var now = moment(new Date());
+    var begin;
+    if(now.hour() < 4){
+        begin = now.subtract(1,'days').startOf('day').add(4,'hours').toDate();
+    } else{        
+        begin = now.startOf('day').add(4,'hours').toDate();
+    }
+
+    var end = moment(begin).add(1, 'days').subtract(1, 'milliseconds').toDate();
+
+    return [begin, end];
 }
 
 export = {
