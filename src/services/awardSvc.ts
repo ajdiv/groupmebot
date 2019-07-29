@@ -29,7 +29,7 @@ function addMsgCounter(gmeUserId, gmeGroupId) {
             } else {
                 result.messageCount++;
                 return result.save();
-            }
+            } 
         });
 }
 
