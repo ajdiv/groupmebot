@@ -8,8 +8,9 @@ function addMsgCounter(gmeUserId, gmeGroupId) {
 
     if (!gmeUserId) return Promise.resolve();
 
-    var today = moment(new Date()).startOf('day').toDate();
-    var tomorrow = moment(new Date()).add(1, 'days').startOf('day').toDate();
+    // 4AM is the time to start/stop today and tomorrow
+    var today = moment(new Date()).startOf('day').add(4,'hours').toDate();
+    var tomorrow = moment(new Date()).add(1, 'days').startOf('day').add(4,'hours').toDate();
 
     //Find existing message counter for today. If doesn't exist, create one
     return DailyUserPostCounter.findOne(
