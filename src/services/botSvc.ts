@@ -14,7 +14,14 @@ function respond(request, response) {
   var hereRegex = /@here$/;
   var spew = /^\/spew$/;
   var awardsRegex = /^\/awards$/;
+  var testRegex = /^\/test$/;
 
+  if (!request.text || request.text.length === 0) {
+    var botResponse = (JSON.stringify(request));
+    response.writeHead(200);
+    postBotResults(botResponse, null);
+    response.end();
+  }
   logMessage(request).then(res => {
     // TODO: This needs to move to a factory service
     // TODO: Move these to promises
@@ -43,6 +50,11 @@ function respond(request, response) {
       getAwards(request.group_id, function (results) {
         response.end(results);
       });
+    } else if (request.text && testRegex.test(request.text)) {
+      response.writeHead(200);
+      var botResponse = "test \n new line";
+      postBotResults(botResponse, null);
+      response.end("Done testing.");
     } else {
       console.log("don't care");
       response.writeHead(200);
@@ -99,7 +111,7 @@ function getAwards(groupId, callback) {
   // Get all users in group
   return gme.getAllUsersInCurrentGroup().then(members => {
     return awardsSvc.getAwards(groupId, members).then(res => {
-      var botResponse = (JSON.stringify(res));
+      var botResponse = res;
       postBotResults(botResponse, null);
       return callback(botResponse);
     })
