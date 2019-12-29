@@ -18,8 +18,8 @@ function respond(request, response) {
 
   if (!request.text || request.text.length === 0) {
     var botResponse = (JSON.stringify(request));
-    response.writeHead(200);
-    postBotResults(botResponse, null);
+    // response.writeHead(200);
+    // postBotResults(botResponse, null);
     response.end();
   }
   logMessage(request).then(res => {
