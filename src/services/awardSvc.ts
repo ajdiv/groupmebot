@@ -53,7 +53,7 @@ function getAwards(gmeGroupId, memberArr) {
 }
 
 function createAwardsObj(awardArr, memberArr) {
-    var result = "Here's who posted the most today: ";
+    var result = "Number of Messages:\n    ";
     var resultArr = [];
 
     awardArr.forEach(person => {
@@ -67,7 +67,7 @@ function createAwardsObj(awardArr, memberArr) {
         result += resultArr[i];
         // If we are at the end of the array, don't add dots
         if (i != resultArr.length - 1) {
-            result += "..........";
+            result += "\n    ";
         }
     }
 
