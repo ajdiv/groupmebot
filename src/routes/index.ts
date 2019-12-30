@@ -1,50 +1,42 @@
-//#region Load Modules, Services, and Models
-
-// 3rd Part Libraries 
 import express = require('express');
 import bodyParser = require('body-parser');
 import mongoose = require('mongoose');
-
-// Services
 import bot = require('../services/botSvc')
+import DailyUserPostCounter = require('../models/DailyUserPostCounterModel');
+import CustomHttpModels = require('../models/CustomHttpModels');
 
-// Models
-import * as DailyUserPostCounter from '../models/dailyUserPostCounter.model';
-//#endregion
-
+// Configure dev environment variables
 if (process.env.NODE_ENV !== "production") {
   const dotenv = require("dotenv");
   dotenv.config({ path: 'config/env' });
 }
 
-let mongoDB = process.env.MONGODB_URI;
+// Configure DB
+const mongoDB = process.env.MONGODB_URI;
 mongoose.connect(mongoDB, { useNewUrlParser: true });
-mongoose.Promise = global.Promise;
-let db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-var port = Number(process.env.PORT || 5000);
+// Configure Web Server
 const app = express();
-
-// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
-app.use(bodyParser.json())
-
+app.use(express.json())
+const port = Number(process.env.PORT || 5000);
 app.listen(port, () => {
   console.log('Server is running on PORT:', port);
 });
 
+// Define REST Methods
 app.get('/', function (req, res) {
-  return ping(req, res);
+  return ping(res);
 });
-
 app.post('/', function (req, res) {
-  return bot.respond(req, res);
+  let reqBody = createReqBody(req.body);
+  return bot.respond(reqBody, res);
 });
 
-function ping(request, response) {
+// Private Methods
+function ping(response: express.Response) {
   response.writeHead(200);
 
   var gmeId = 2; //TEST ONLY
@@ -67,4 +59,8 @@ function ping(request, response) {
       });
     }
   });
+}
+
+function createReqBody(reqBody: any): CustomHttpModels.RequestBodyModel {
+  return new CustomHttpModels.RequestBodyModel(reqBody.text, reqBody.user_id, reqBody.group_id);
 }

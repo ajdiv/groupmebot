@@ -7,13 +7,11 @@ interface IDailyUserPostCounter extends mongoose.Document {
   date: Date;
 }
 
-var DailyUserPostCounterSchema = new mongoose.Schema({
+const DailyUserPostCounterSchema: mongoose.Schema<IDailyUserPostCounter> = new mongoose.Schema({
   gmeUserId: { type: Number, required: true },
   gmeGroupId: { type: Number, required: true },
   messageCount: { type: Number, required: true },
   date: { type: Date, required: true },
 });
 
-// Export the model
-var DailyUserPostCounter = mongoose.model<IDailyUserPostCounter>("DailyUserPostCounter", DailyUserPostCounterSchema);
-export = DailyUserPostCounter;
+export = mongoose.model<IDailyUserPostCounter>("DailyUserPostCounterModel", DailyUserPostCounterSchema);

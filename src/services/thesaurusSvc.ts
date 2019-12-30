@@ -1,29 +1,28 @@
 import request = require('request');
 import textUtils = require('../utilities/textUtilities');
 
-function thesaurize(phrase, callback) {
-  var wordArr = parseSentence(phrase);
-  var promiseArr = [];
+async function thesaurize(phrase: string): Promise<string> {
+  let wordArr = parseSentence(phrase);
+  let promiseArr = [];
 
   for(var i = 0; i < wordArr.length;i++){
-    var word = wordArr[i];
+    let word = wordArr[i];
     console.log("Word: " + word);
-    var promise = createApiPromise(word);
+    let promise = createApiPromise(word);
     promiseArr.push(promise);
   }
 
-  Promise.all(promiseArr).then(function(resultArrays){
-    var result = '';
-    for(var i = 0; i < resultArrays.length; i++){
-      var syn = textUtils.pickRandomWord(resultArrays[i]);
-      result += syn + ' ';
-    }
-    callback(result.trim());
-  });
+  const resultArrays: any[] = await Promise.all(promiseArr);
+  let result = '';
+  for (var i_1 = 0; i_1 < resultArrays.length; i_1++) {
+    let syn = textUtils.pickRandomWord(resultArrays[i_1]);
+    result += syn + ' ';
+  }
+  return Promise.resolve(result.trim());
 
 };
 
-function parseSentence(sentence) {
+function parseSentence(sentence: string) {
   var arr = sentence.split(' ');
   var result = [];
   for (var i = 0; i < arr.length; i++) {
@@ -33,10 +32,10 @@ function parseSentence(sentence) {
   return result;
 };
 
-function createApiPromise(word) {
+function createApiPromise(word: string) {
   if(checkWordBlacklisted(word)){
     return Promise.resolve([word]);
-  } 
+  }
 
   var apiKey = process.env.THESAURUS_API_KEY;
   var url = 'https://www.dictionaryapi.com/api/v3/references/thesaurus/json/' + word + '?key=' + apiKey;
@@ -61,7 +60,7 @@ function createApiPromise(word) {
   return promise;
 };
 
-function checkWordBlacklisted(word){
+function checkWordBlacklisted(word: string){
   // These must all be lowercase
   var blackListArr = [
     "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"
