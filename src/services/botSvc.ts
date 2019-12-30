@@ -1,122 +1,36 @@
 import HTTPS = require('https');
-import cool = require('cool-ascii-faces');
-import thesaurus = require('./thesaurusSvc');
-import gme = require('./gmeSvc');
+import express = require('express');
 import awardsSvc = require('./awardSvc');
+import CustomHttpModels = require('../models/CustomHttpModels');
+import CommandExecutor = require('../factories/commandExecutor');
+import { BotResponseModel, BotResponseAttachmentModel } from '../models/BotResponseModel';
 
-
-// Hard-coded botId is the Test Dev GroupMe bot
 var options = getRequestOptions();
-function respond(request, response) {
-  var request = request.body;
-  var coolGuyRegex = /^\/cool guy$/;
-  var thesaurusRegex = /^\/thesaurize$/;
-  var hereRegex = /@here$/;
-  var spew = /^\/spew$/;
-  var awardsRegex = /^\/awards$/;
-  var testRegex = /^\/test$/;
 
-  if (!request.text || request.text.length === 0) {
-    var botResponse = (JSON.stringify(request));
-    // response.writeHead(200);
-    // postBotResults(botResponse, null);
-    response.end();
+async function respond(reqBody: CustomHttpModels.RequestBodyModel, response: express.Response) {
+  await logMessage(reqBody);
+
+  let responseMsg: string;
+  response.writeHead(200);
+
+  const commandResult = await CommandExecutor.executeCommand(reqBody);
+  if (commandResult !== null) {
+    postBotResults(commandResult);
+    responseMsg = commandResult.text;
   }
-  logMessage(request).then(res => {
-    // TODO: This needs to move to a factory service
-    // TODO: Move these to promises
-    if (request.user_id && spew.test(request.text)) {
-      response.writeHead(200);
-      addSpew(request.user_id, function (results) {
-        response.end(results);
-      });
-    } else if (request.text && coolGuyRegex.test(request.text)) {
-      response.writeHead(200);
-      postCoolGuyMessage(function (results) {
-        response.end(results);
-      });
-    } else if (request.text && thesaurusRegex.test(request.text)) {
-      response.writeHead(200);
-      postThesaurizeMessage(function (results) {
-        response.end(results);
-      });
-    } else if (request.text && hereRegex.test(request.text)) {
-      response.writeHead(200);
-      tagEveryone(function (results) {
-        response.end(results);
-      });
-    } else if (request.text && awardsRegex.test(request.text)) {
-      response.writeHead(200);
-      getAwards(request.group_id, function (results) {
-        response.end(results);
-      });
-    } else if (request.text && testRegex.test(request.text)) {
-      response.writeHead(200);
-      var botResponse = "test \n new line";
-      postBotResults(botResponse, null);
-      response.end("Done testing.");
-    } else {
-      console.log("don't care");
-      response.writeHead(200);
-      response.end();
-    }
-  });
+
+  response.end(responseMsg);
 }
 
-function logMessage(request): Promise<any> {
-  if (request.text) {
-    request.text = request.text.trim();
-    if (request.user_id && request.group_id) {
-      return awardsSvc.addMsgCounter(request.user_id, request.group_id);
+function logMessage(requestBody: CustomHttpModels.RequestBodyModel): Promise<any> {
+  if (requestBody.text) {
+    requestBody.text = requestBody.text.trim();
+    if (requestBody.user_id && requestBody.group_id) {
+      return awardsSvc.addMsgCounter(requestBody.user_id, requestBody.group_id);
     }
   }
   return Promise.resolve();
 }
-
-function postCoolGuyMessage(callback) {
-  var botResponse = cool();
-  postBotResults(botResponse, null);
-  return callback(botResponse);
-}
-
-function postThesaurizeMessage(callback) {
-  gme.getLastMessageText(function (res) {
-    thesaurus.thesaurize(res, function (res) {
-      var botResponse = (JSON.stringify(res));
-      postBotResults(botResponse, null);
-      return callback(botResponse);
-    });
-  });
-};
-
-function addSpew(userId, callback) {
-  gme.addSpew(userId, function (res) {
-    var botResponse = (JSON.stringify(res));
-    postBotResults(botResponse, null);
-    return callback(botResponse);
-  });
-};
-
-function tagEveryone(callback) {
-  var botText = ""; //Maybe handle space elsewhere but leave at end for now
-  //var botText = "Tagging everyone "; //Maybe handle space elsewhere but leave at end for now
-  gme.tagEveryone(botText, function (res) {
-    var botResponse = (JSON.stringify(res));
-    postBotResults(res.text, res.attachments);
-    return callback(botResponse);
-  });
-};
-
-function getAwards(groupId, callback) {
-  // Get all users in group
-  return gme.getAllUsersInCurrentGroup().then(members => {
-    return awardsSvc.getAwards(groupId, members).then(res => {
-      var botResponse = res;
-      postBotResults(botResponse, null);
-      return callback(botResponse);
-    })
-  });
-};
 
 function getRequestOptions() {
   return {
@@ -126,14 +40,31 @@ function getRequestOptions() {
   };
 };
 
-function getBotBody(botResponse, attachments) {
-  var botID = process.env.BOT_ID;
+// This is where we can probably hardcode some shit
+function getBotBody(responseModel: BotResponseModel): any {
+  const botID = process.env.BOT_ID;
+  const text = responseModel.text;
+  const attachmentObj = formatBotAttachments(responseModel.attachments);
   return {
     "bot_id": botID,
-    "text": botResponse,
-    "attachments": attachments
+    "text": text,
+    "attachments": attachmentObj
   };
 };
+
+function formatBotAttachments(attachmentsModel: BotResponseAttachmentModel[]): any[] {
+  if(!attachmentsModel) return null;
+  var resultArr: any[] = [];
+  for (let i = 0; i < attachmentsModel.length; i++){
+    let attachment = attachmentsModel[i];
+    resultArr.push({
+      "type": attachment.type,
+      "user_ids": attachment.userIds,
+      "loci": attachment.lociArr
+    })
+  }
+  return resultArr;
+}
 
 function getBotReqObj() {
   var botReq = HTTPS.request(options, function (res) {
@@ -147,20 +78,29 @@ function getBotReqObj() {
   return botReq;
 };
 
-function configureBotReqObj(botReq) {
-  botReq.on('error', function (err) {
+function configureBotReqObj(botReq: any) {
+  botReq.on('error', function (err: any) {
     console.log('error posting message ' + JSON.stringify(err));
   });
-  botReq.on('timeout', function (err) {
+  botReq.on('timeout', function (err: any) {
     console.log('timeout posting message ' + JSON.stringify(err));
   });
 }
 
-function postBotResults(botResponse, attachmentsArr) {
+// function postBotResults(botResponse, attachmentsArr) {
+//   var botID = process.env.BOT_ID;
+//   var body = getBotBody(botResponse, attachmentsArr);
+//   var botReq = getBotReqObj();
+//   console.log('sending ' + botResponse + ' to ' + botID);
+//   var results = JSON.stringify(body);
+//   botReq.end(results);
+// };
+
+function postBotResults(responseModel: BotResponseModel) {
   var botID = process.env.BOT_ID;
-  var body = getBotBody(botResponse, attachmentsArr);
+  var body = getBotBody(responseModel);
   var botReq = getBotReqObj();
-  console.log('sending ' + botResponse + ' to ' + botID);
+  console.log('sending ' + responseModel.text + ' to ' + botID);
   var results = JSON.stringify(body);
   botReq.end(results);
 };
