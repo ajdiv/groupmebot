@@ -114,15 +114,19 @@ async function getAwards(groupId: number) {
 // TODO: Separate this into another service
 async function isItWednesday() {
   let result: string;
-  let now = moment();
-  let currentDay = now.day();
-  const dayINeed = 3; // 0 based, Sunday is start of week
-  if (currentDay === dayINeed) {
+  let now = moment().isoWeekday();
+  const dayINeed = 3; // 1 based, Monday is 1 and Sunday is 7
+  if (now === dayINeed) {
     result = "It's Wednesday my dudes";
   } else {
-    const targetDate = moment().add(1, 'weeks').isoWeekday(dayINeed).startOf('day');
+    let targetDate;
+    if(now > dayINeed){
+      targetDate = moment().add(1, 'weeks').isoWeekday(dayINeed).startOf('day');
+    } else {
+      targetDate = moment().isoWeekday(dayINeed).startOf('day');
+    }
 
-    const diffMinutes = Math.ceil(targetDate.diff(now, 'minutes', true));
+    const diffMinutes = Math.ceil(targetDate.diff(moment(), 'minutes', true));
     const days = Math.floor(diffMinutes/60/24); // 60 mins in an hour, 24 hours in a day
     const daysTense = days === 1 ? 'day' : 'days';
     // Get total diff in hours, subtract what we have in days already
