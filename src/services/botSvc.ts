@@ -3,7 +3,7 @@ import express = require('express');
 import awardsSvc = require('./awardSvc');
 import CustomHttpModels = require('../models/CustomHttpModels');
 import CommandExecutor = require('../factories/commandExecutor');
-import { BotResponseModel, BotResponseAttachmentModel } from '../models/BotResponseModel';
+import { BotResponseAttachmentModel, BotResponseModel } from '../models/BotResponseModel';
 
 var options = getRequestOptions();
 
@@ -24,7 +24,7 @@ async function respond(reqBody: CustomHttpModels.RequestBodyModel, response: exp
 
 function logMessage(requestBody: CustomHttpModels.RequestBodyModel): Promise<any> {
   if (requestBody.text) {
-    requestBody.text = requestBody.text.trim();
+    requestBody.text = requestBody.text.trim().toLowerCase();
     if (requestBody.user_id && requestBody.group_id) {
       return awardsSvc.addMsgCounter(requestBody.user_id, requestBody.group_id);
     }
