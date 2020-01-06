@@ -118,7 +118,7 @@ async function isItWednesday() {
   let now = moment().isoWeekday();
   const dayINeed = 3; // 1 based, Monday is 1 and Sunday is 7
   if (now === dayINeed) {
-    result = "It's Wednesday my dudes";
+    result = "https://media.giphy.com/media/dvDCHPFnxnYubsrNvl/giphy.gif";
   } else {
     let targetDate;
     if(now > dayINeed){
