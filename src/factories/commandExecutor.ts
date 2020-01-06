@@ -9,7 +9,8 @@ import moment = require('moment');
 const cool = require('cool-ascii-faces');
 
 function executeCommand(reqBody: CustomHttpModels.RequestBodyModel): Promise<BotResponseModel> {
-  var coolGuyRegex = /^\/cool guy$/;
+  var coolGuyRegexWithSpace = /^\/cool guy$/;
+  var coolGuyRegex = /^\/coolguy$/;
   var thesaurusRegex = /^\/thesaurize$/;
   var hereRegex = /@here$/;
   var spew = /^\/spew$/;
@@ -18,7 +19,7 @@ function executeCommand(reqBody: CustomHttpModels.RequestBodyModel): Promise<Bot
 
   if (reqBody.user_id && spew.test(reqBody.text)) {
     return addSpew(reqBody.user_id);
-  } else if (reqBody.text && coolGuyRegex.test(reqBody.text)) {
+  } else if (reqBody.text && (coolGuyRegex.test(reqBody.text) || coolGuyRegexWithSpace.test(reqBody.text))) {
     return postCoolGuyMessage();
   } else if (reqBody.text && thesaurusRegex.test(reqBody.text)) {
     return postThesaurizeMessage();
