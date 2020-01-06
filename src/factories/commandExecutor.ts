@@ -1,8 +1,9 @@
 import CustomHttpModels = require('../models/CustomHttpModels');
-import { BotResponseModel, BotResponseAttachmentModel } from '../models/BotResponseModel';
+import { BotResponseAttachmentModel, BotResponseModel } from '../models/BotResponseModel';
 import gme = require('../services/gmeSvc');
 import thesaurus = require('../services/thesaurusSvc');
 import awardsSvc = require('../services/awardSvc');
+import moment = require('moment');
 
 // Can't import this guy because it doesn't have any types
 const cool = require('cool-ascii-faces');
@@ -13,6 +14,7 @@ function executeCommand(reqBody: CustomHttpModels.RequestBodyModel): Promise<Bot
   var hereRegex = /@here$/;
   var spew = /^\/spew$/;
   var awardsRegex = /^\/awards$/;
+  var wedRegex = /^\/wednesday$/;
 
   if (reqBody.user_id && spew.test(reqBody.text)) {
     return addSpew(reqBody.user_id);
@@ -24,6 +26,8 @@ function executeCommand(reqBody: CustomHttpModels.RequestBodyModel): Promise<Bot
     return tagEveryone();
   } else if (reqBody.text && awardsRegex.test(reqBody.text)) {
     return getAwards(reqBody.group_id);
+  } else if (reqBody.text && wedRegex.test(reqBody.text)) {
+    return isItWednesday();
   } else {
     // Don't care - ignore this
     return Promise.resolve(null);
@@ -106,6 +110,33 @@ async function getAwards(groupId: number) {
   const awards = await awardsSvc.getAwards(groupId, allGroupMembers);
   return Promise.resolve(new BotResponseModel(awards, null));
 };
+
+// TODO: Separate this into another service
+async function isItWednesday() {
+  let result: string;
+  let now = moment();
+  let currentDay = now.day();
+  const dayINeed = 3; // 0 based, Sunday is start of week
+  if (currentDay === dayINeed) {
+    result = "It's Wednesday my dudes";
+  } else {
+    const targetDate = moment().add(1, 'weeks').isoWeekday(dayINeed).startOf('day');
+
+    const diffMinutes = Math.ceil(targetDate.diff(now, 'minutes', true));
+    const days = Math.floor(diffMinutes/60/24); // 60 mins in an hour, 24 hours in a day
+    const daysTense = days === 1 ? 'day' : 'days';
+    // Get total diff in hours, subtract what we have in days already
+    const hours = Math.floor(diffMinutes/60) - (days * 24);
+    const hoursTense = hours === 1 ? 'hour' : 'hours';
+    // Get total diff in minutes, subtract what we have in days and hours already
+    const mins = diffMinutes - hours*60 - days*24*60;
+    const minsTense = mins === 1 ? 'minute' : 'minutes';
+
+    result = `It's ${days} ${daysTense}, ${hours} ${hoursTense}, and ${mins} ${minsTense} until Wednesday my dudes.`;
+
+  }
+  return Promise.resolve(new BotResponseModel(result, null));
+}
 
 export = {
   executeCommand: executeCommand
