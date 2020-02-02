@@ -1,28 +1,29 @@
 import HTTPS = require('https');
 import express = require('express');
 import awardsSvc = require('./awardSvc');
-import CustomHttpModels = require('../models/CustomHttpModels');
-import CommandExecutor = require('../factories/commandExecutor');
+import CommandFactory = require('./commandFactory');
 import { BotResponseAttachmentModel, BotResponseModel } from '../models/BotResponseModel';
+import { RequestBodyModel } from '../models/CustomHttpModels';
 
-var options = getRequestOptions();
+const options = getRequestOptions();
 
-async function respond(reqBody: CustomHttpModels.RequestBodyModel, response: express.Response) {
+async function respond(reqBody: RequestBodyModel, response: express.Response): Promise<void> {
   await logMessage(reqBody);
 
   let responseMsg: string;
   response.writeHead(200);
 
-  const commandResult = await CommandExecutor.executeCommand(reqBody);
-  if (commandResult !== null) {
-    postBotResults(commandResult);
-    responseMsg = commandResult.text;
+  const command = CommandFactory.getCommand(reqBody);
+  if (command) {
+    const results = await command.execute(reqBody);
+    responseMsg = results.text;
+    postBotResults(results);
   }
 
   response.end(responseMsg);
 }
 
-function logMessage(requestBody: CustomHttpModels.RequestBodyModel): Promise<any> {
+function logMessage(requestBody: RequestBodyModel): Promise<any> {
   if (requestBody.text) {
     requestBody.text = requestBody.text.trim().toLowerCase();
     if (requestBody.user_id && requestBody.group_id) {
@@ -53,9 +54,9 @@ function getBotBody(responseModel: BotResponseModel): any {
 };
 
 function formatBotAttachments(attachmentsModel: BotResponseAttachmentModel[]): any[] {
-  if(!attachmentsModel) return null;
+  if (!attachmentsModel) return null;
   var resultArr: any[] = [];
-  for (let i = 0; i < attachmentsModel.length; i++){
+  for (let i = 0; i < attachmentsModel.length; i++) {
     let attachment = attachmentsModel[i];
     resultArr.push({
       "type": attachment.type,

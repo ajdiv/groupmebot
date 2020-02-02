@@ -3,7 +3,7 @@ import bodyParser = require('body-parser');
 import mongoose = require('mongoose');
 import bot = require('../services/botSvc')
 import DailyUserPostCounter = require('../models/DailyUserPostCounterModel');
-import CustomHttpModels = require('../models/CustomHttpModels');
+import { RequestBodyModel } from '../models/CustomHttpModels';
 
 // Configure dev environment variables
 if (process.env.NODE_ENV !== "production") {
@@ -31,11 +31,16 @@ app.get('/', function (req, res) {
   return ping(res);
 });
 app.post('/', function (req, res) {
+  const rawJson = JSON.stringify(req.body);
+  console.log('This is the request object I got: '+ rawJson);
   let reqBody = createReqBody(req.body);
   return bot.respond(reqBody, res);
 });
 
-// Private Methods
+function createReqBody(reqBody: any): RequestBodyModel {
+  return new RequestBodyModel(reqBody.text, reqBody.user_id, reqBody.group_id);
+}
+
 function ping(response: express.Response) {
   response.writeHead(200);
 
@@ -59,8 +64,4 @@ function ping(response: express.Response) {
       });
     }
   });
-}
-
-function createReqBody(reqBody: any): CustomHttpModels.RequestBodyModel {
-  return new CustomHttpModels.RequestBodyModel(reqBody.text, reqBody.user_id, reqBody.group_id);
 }
