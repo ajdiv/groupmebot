@@ -1,5 +1,5 @@
 import { Command } from '../models/CommandModel';
-import { RequestBodyModel } from '../models/CustomHttpModels';
+import { GroupmeMessageModel } from '../models/GroupmeMessageModel';
 import { AwardsCommand } from './commands/awardsCommand';
 import { CoolGuyCommand } from './commands/coolGuyCommand';
 import { HereCommand } from './commands/hereCommand';
@@ -7,7 +7,7 @@ import { SpewCommand } from './commands/spewCommand';
 import { ThesaurizeCommand } from './commands/thesaurizeCommand';
 import { WednesdayCommand } from './commands/wednesdayCommand';
 
-function getCommand(reqBody: RequestBodyModel): Command {
+function getCommand(reqBody: GroupmeMessageModel): Command {
   const awardsRegex = /^\/awards$/;
   const coolGuyRegex = /^\/coolguy$/;
   const coolGuyRegexWithSpace = /^\/cool guy$/;

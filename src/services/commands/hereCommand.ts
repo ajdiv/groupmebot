@@ -1,6 +1,6 @@
-import { AttachmentTypes } from "../../models/AttachmentOptions";
-import { BotResponseAttachmentModel, BotResponseModel } from "../../models/BotResponseModel";
+import { BotResponseModel } from "../../models/BotResponseModel";
 import { Command } from "../../models/CommandModel";
+import { GroupmeMentionsAttachmentModel } from "../../models/GroupmeMentionsAttachmentModel";
 
 import GroupMeService = require('../gmeSvc');
 
@@ -38,16 +38,8 @@ export class HereCommand implements Command {
   async execute(): Promise<BotResponseModel> {
     const allGroupMembers = await GroupMeService.getAllUsersInCurrentGroup();
     this.buildTagProperties(allGroupMembers);
-    const result = new BotResponseModel(
-      this.responseText,
-      [
-        new BotResponseAttachmentModel(
-          AttachmentTypes.Mentions,
-          this.userIds,
-          this.lociArray
-        )
-      ]
-    )
+    const mentionsAttachment = new GroupmeMentionsAttachmentModel(this.lociArray, this.userIds);
+    const result = new BotResponseModel(this.responseText, [mentionsAttachment]);
     return result;
   }
 

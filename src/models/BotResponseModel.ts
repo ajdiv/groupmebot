@@ -1,23 +1,14 @@
-import { AttachmentTypes } from "./AttachmentOptions";
+import { GroupmeAttachmentModel } from "./GroupmeAttachmentModel";
 
 export class BotResponseModel {
-  text?: string;
-  attachments?: BotResponseAttachmentModel[];
+  text: string;
+  attachments: GroupmeAttachmentModel[];
 
-  constructor(text?: string, attachments?: BotResponseAttachmentModel[]) {
+  bot_id: string;
+
+  constructor(text: string, attachments: GroupmeAttachmentModel[]) {
+    this.bot_id = process.env.BOT_ID;
     this.text = text;
     this.attachments = attachments;
-  }
-}
-
-export class BotResponseAttachmentModel {
-  type: AttachmentTypes;
-  userIds: number[];
-  lociArr: [number, number][];
-
-  constructor(type: AttachmentTypes, userIds: number[], lociArr: [number, number][]) {
-    this.type = type;
-    this.userIds = userIds;
-    this.lociArr = lociArr;
   }
 }

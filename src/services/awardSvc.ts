@@ -3,7 +3,7 @@ import moment = require('moment');
 
 import DailyUserPostCounter = require('../models/DailyUserPostCounterModel');
 
-function addMsgCounter(gmeUserId: number, gmeGroupId: number) {
+function addMsgCounter(gmeUserId: number, gmeGroupId: number): Promise<void> {
   if (!gmeUserId) return Promise.resolve();
 
   var time = getTodayAndTomorrow();
@@ -29,6 +29,8 @@ function addMsgCounter(gmeUserId: number, gmeGroupId: number) {
         result.messageCount++;
         return result.save();
       }
+    }).then(() => {
+      return Promise.resolve()
     });
 }
 

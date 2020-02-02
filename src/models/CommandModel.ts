@@ -1,6 +1,6 @@
-import { RequestBodyModel } from "../models/CustomHttpModels";
 import { BotResponseModel } from "./BotResponseModel";
+import { GroupmeMessageModel } from "./GroupmeMessageModel";
 
 export interface Command {
-  execute(botRequestBody: RequestBodyModel): Promise<BotResponseModel>;
+  execute(botRequestBody: GroupmeMessageModel): Promise<BotResponseModel>;
 }
