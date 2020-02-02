@@ -1,13 +1,13 @@
 import HTTPS = require('https');
 import express = require('express');
 import awardsSvc = require('./awardSvc');
-import CustomHttpModels = require('../models/CustomHttpModels');
 import CommandFactory = require('./commandFactory');
 import { BotResponseAttachmentModel, BotResponseModel } from '../models/BotResponseModel';
+import { RequestBodyModel } from '../models/CustomHttpModels';
 
 const options = getRequestOptions();
 
-async function respond(reqBody: CustomHttpModels.RequestBodyModel, response: express.Response): Promise<void> {
+async function respond(reqBody: RequestBodyModel, response: express.Response): Promise<void> {
   await logMessage(reqBody);
 
   let responseMsg: string;
@@ -23,7 +23,7 @@ async function respond(reqBody: CustomHttpModels.RequestBodyModel, response: exp
   response.end(responseMsg);
 }
 
-function logMessage(requestBody: CustomHttpModels.RequestBodyModel): Promise<any> {
+function logMessage(requestBody: RequestBodyModel): Promise<any> {
   if (requestBody.text) {
     requestBody.text = requestBody.text.trim().toLowerCase();
     if (requestBody.user_id && requestBody.group_id) {
