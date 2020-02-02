@@ -1,13 +1,15 @@
 import HTTPS = require('https');
-import express = require('express');
 import awardsSvc = require('./awardSvc');
+import express = require('express');
 import CommandFactory = require('./commandFactory');
-import { BotResponseAttachmentModel, BotResponseModel } from '../models/BotResponseModel';
-import { RequestBodyModel } from '../models/CustomHttpModels';
+import { ClientRequest } from 'http';
+import { BotResponseModel } from '../models/BotResponseModel';
+import { GroupmeMessageModel } from '../models/GroupmeMessageModel';
+import { SenderType } from '../models/GroupmeSenderType';
 
-const options = getRequestOptions();
+async function respond(reqBody: GroupmeMessageModel, response: express.Response): Promise<void> {
+  if (reqBody.text) reqBody.text = reqBody.text.trim().toLowerCase();
 
-async function respond(reqBody: RequestBodyModel, response: express.Response): Promise<void> {
   await logMessage(reqBody);
 
   let responseMsg: string;
@@ -17,94 +19,42 @@ async function respond(reqBody: RequestBodyModel, response: express.Response): P
   if (command) {
     const results = await command.execute(reqBody);
     responseMsg = results.text;
-    postBotResults(results);
+    sendBotResponse(results);
   }
 
   response.end(responseMsg);
 }
 
-function logMessage(requestBody: RequestBodyModel): Promise<any> {
-  if (requestBody.text) {
-    requestBody.text = requestBody.text.trim().toLowerCase();
-    if (requestBody.user_id && requestBody.group_id) {
-      return awardsSvc.addMsgCounter(requestBody.user_id, requestBody.group_id);
-    }
+function logMessage(requestBody: GroupmeMessageModel): Promise<void> {
+  if (requestBody.sender_type === SenderType.User) {
+    return awardsSvc.addMsgCounter(parseInt(requestBody.user_id), requestBody.group_id);
+  } else {
+    // It's a bot - let's not record this message
+    return Promise.resolve();
   }
-  return Promise.resolve();
 }
 
-function getRequestOptions() {
-  return {
+function sendBotResponse(responseModel: BotResponseModel) {
+  const reqOptions: HTTPS.RequestOptions = {
     hostname: 'api.groupme.com',
     path: '/v3/bots/post',
     method: 'POST'
   };
+
+  const clientReq = HTTPS.request(reqOptions);
+  addRequestErrorHandlers(clientReq);
+  console.log(`This is what I'm sending back: "${responseModel.text}"`);
+  clientReq.end(JSON.stringify(responseModel));
 };
 
-// This is where we can probably hardcode some shit
-function getBotBody(responseModel: BotResponseModel): any {
-  const botID = process.env.BOT_ID;
-  const text = responseModel.text;
-  const attachmentObj = formatBotAttachments(responseModel.attachments);
-  return {
-    "bot_id": botID,
-    "text": text,
-    "attachments": attachmentObj
-  };
-};
-
-function formatBotAttachments(attachmentsModel: BotResponseAttachmentModel[]): any[] {
-  if (!attachmentsModel) return null;
-  var resultArr: any[] = [];
-  for (let i = 0; i < attachmentsModel.length; i++) {
-    let attachment = attachmentsModel[i];
-    resultArr.push({
-      "type": attachment.type,
-      "user_ids": attachment.userIds,
-      "loci": attachment.lociArr
-    })
-  }
-  return resultArr;
-}
-
-function getBotReqObj() {
-  var botReq = HTTPS.request(options, function (res) {
-    if (res.statusCode == 202) {
-      //neat
-    } else {
-      console.log('rejecting bad status code ' + res.statusCode);
-    }
-  });
-  configureBotReqObj(botReq);
-  return botReq;
-};
-
-function configureBotReqObj(botReq: any) {
-  botReq.on('error', function (err: any) {
+function addRequestErrorHandlers(clientReq: ClientRequest) {
+  clientReq.on('error', function (err: any) {
     console.log('error posting message ' + JSON.stringify(err));
   });
-  botReq.on('timeout', function (err: any) {
+  clientReq.on('timeout', function (err: any) {
     console.log('timeout posting message ' + JSON.stringify(err));
   });
 }
-
-// function postBotResults(botResponse, attachmentsArr) {
-//   var botID = process.env.BOT_ID;
-//   var body = getBotBody(botResponse, attachmentsArr);
-//   var botReq = getBotReqObj();
-//   console.log('sending ' + botResponse + ' to ' + botID);
-//   var results = JSON.stringify(body);
-//   botReq.end(results);
-// };
-
-function postBotResults(responseModel: BotResponseModel) {
-  var botID = process.env.BOT_ID;
-  var body = getBotBody(responseModel);
-  var botReq = getBotReqObj();
-  console.log('sending ' + responseModel.text + ' to ' + botID);
-  var results = JSON.stringify(body);
-  botReq.end(results);
-};
 
 export = {
   respond: respond
