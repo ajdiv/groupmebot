@@ -72,6 +72,7 @@ async function getAwards(): Promise<string> {
   let result = '';
   result += getTopMessages(userStatsArr);
   result += '\n';
+  result += '\n';
   result += getMostLikeable(userStatsArr);
   return result;
 }
@@ -80,7 +81,7 @@ function getTopMessages(userStatsArr: UserStatsModel[]): string {
 
   let topMessageString = "Most Messages Sent:\n    ";
   let topMessageResultArr: string[] = [];
-  const topMessages = _.sortBy(userStatsArr, x => x.messageCount, 'desc');
+  const topMessages = _.sortBy(userStatsArr, x => x.messageCount).reverse();
   _.each(topMessages, stats => {
     topMessageResultArr.push(stats.nickname + " (" + stats.messageCount + ")");
   });
@@ -99,7 +100,7 @@ function getMostLikeable(userStatsArr: UserStatsModel[]): string {
 
   let likeableString = "Most Likeable:\n    ";
   let likeableResultArr: string[] = [];
-  const likeableUsers = _.sortBy(userStatsArr, x => x.likeCount / x.messageCount, 'desc');
+  const likeableUsers = _.sortBy(userStatsArr, x => x.likeCount / x.messageCount).reverse();
   _.each(likeableUsers, stats => {
     likeableResultArr.push(`${stats.nickname} (${stats.likeCount} like${stats.likeCount === 1 ? '' : 's'} in ${stats.messageCount} message${stats.messageCount === 1 ? '' : 's'})`);
   });
