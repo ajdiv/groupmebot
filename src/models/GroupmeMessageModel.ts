@@ -8,6 +8,7 @@ export class GroupmeMessageModel {
 
   public attachments: GroupmeAttachmentModel[];
   public avatar_url: string;
+  public favorited_by: number[];
   public group_id: number;
   public id: string;
   public name: string;

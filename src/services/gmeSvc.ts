@@ -1,21 +1,7 @@
-import request = require('request-promise');
 import Spew = require('../models/SpewModel');
-
-const groupMeUrl = 'https://api.groupme.com/v3/groups/';
-
-function getLastMessageText(): Promise<string> {
-  const groupId = process.env.GROUP_ID;
-  const accessToken = process.env.ACCESS_TOKEN;
-  var url = groupMeUrl + groupId
-    + '/messages' + '?token=' + accessToken;
-  return request(url).then((res: any) => {
-    var rawResults = JSON.parse(res);
-    var result = rawResults.response.messages[1].text;
-    return Promise.resolve(result);
-  }).catch((error: any) => {
-    return Promise.reject(error.code + ": An error has occurred connecting to the GroupMe API.")
-  });
-}
+import groupmeApiSvc = require('./groupmeApiSvc');
+import _ = require('lodash');
+import { GroupmeUserModel } from '../models/GroupmeUserModel';
 
 function addSpew(userId: number): Promise<string> {
   return Spew.findOne({ gmeUserId: userId }).then(result => {
@@ -37,14 +23,16 @@ function addSpew(userId: number): Promise<string> {
   });
 }
 
-function getAllUsersInCurrentGroup(): Promise<any[]> {
-  var groupId = process.env.GROUP_ID;
-  const accessToken = process.env.ACCESS_TOKEN;
-  var url = groupMeUrl + groupId + '?token=' + accessToken;
-  return request(url).then(resStr => {
-    var resJson = JSON.parse(resStr);
-    return resJson.response.members;
-  });
+async function getAllUsersInCurrentGroup(): Promise<GroupmeUserModel[]> {
+  const group = await groupmeApiSvc.getCurrentGroup();
+  const members = group.members;
+  return members;
+}
+
+async function getLastMessageText(): Promise<string> {
+  const lastMessages = await groupmeApiSvc.getMessages(2, null, null);
+  const message = lastMessages[1]; // We actually take the second to last because the last message was the command itself
+  return message.text;
 }
 
 export = {
