@@ -1,9 +1,9 @@
 import express = require('express');
 import bodyParser = require('body-parser');
 import mongoose = require('mongoose');
-import bot = require('../services/botSvc')
+import BotService = require('../services/botSvc')
 import DailyUserPostCounter = require('../models/DailyUserPostCounterModel');
-import CustomHttpModels = require('../models/CustomHttpModels');
+import { GroupmeMessageModel } from '../models/GroupmeMessageModel';
 
 // Configure dev environment variables
 if (process.env.NODE_ENV !== "production") {
@@ -27,15 +27,17 @@ app.listen(port, () => {
 });
 
 // Define REST Methods
-app.get('/', function (req, res) {
+app.get('/', function (req: express.Request, res: express.Response) {
   return ping(res);
 });
-app.post('/', function (req, res) {
-  let reqBody = createReqBody(req.body);
-  return bot.respond(reqBody, res);
+app.post('/', function (req: express.Request, res: express.Response) {
+  const rawJson = JSON.stringify(req.body);
+  console.log('This is the request object I got: ' + rawJson);
+  let requestModel: GroupmeMessageModel = Object.assign(new GroupmeMessageModel(), req.body);
+  return BotService.respond(requestModel, res);
 });
 
-// Private Methods
+// As of 2/2/2020 this is just for testing
 function ping(response: express.Response) {
   response.writeHead(200);
 
@@ -59,8 +61,4 @@ function ping(response: express.Response) {
       });
     }
   });
-}
-
-function createReqBody(reqBody: any): CustomHttpModels.RequestBodyModel {
-  return new CustomHttpModels.RequestBodyModel(reqBody.text, reqBody.user_id, reqBody.group_id);
 }
