@@ -30,7 +30,7 @@ async function getAllUsersInCurrentGroup(): Promise<GroupmeUserModel[]> {
 }
 
 async function getLastMessageText(): Promise<string> {
-  const lastMessages = await groupmeApiSvc.getMessages(2);
+  const lastMessages = await groupmeApiSvc.getMessages(2, null, null);
   const message = lastMessages[1]; // We actually take the second to last because the last message was the command itself
   return message.text;
 }
