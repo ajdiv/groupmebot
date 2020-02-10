@@ -2,7 +2,6 @@ import { BotResponseModel } from "../../models/BotResponseModel";
 import { Command } from "../../models/CommandModel";
 
 import AwardsService = require('../../services/awardSvc');
-import GroupMeService = require('../../services/gmeSvc');
 
 export class AwardsCommand implements Command {
 

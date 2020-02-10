@@ -1,5 +1,5 @@
 import { Command } from '../models/CommandModel';
-import { GroupmeMessageModel } from '../models/GroupmeMessageModel';
+import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 import { AwardsCommand } from './commands/awardsCommand';
 import { CoolGuyCommand } from './commands/coolGuyCommand';
 import { HereCommand } from './commands/hereCommand';
@@ -8,25 +8,21 @@ import { ThesaurizeCommand } from './commands/thesaurizeCommand';
 import { WednesdayCommand } from './commands/wednesdayCommand';
 
 function getCommand(reqBody: GroupmeMessageModel): Command {
-  const awardsRegex = /^\/awards$/;
-  const coolGuyRegex = /^\/coolguy$/;
-  const coolGuyRegexWithSpace = /^\/cool guy$/;
-  const hereRegex = /@here$/;
-  const spewRegex = /^\/spew$/;
-  const thesaurusRegex = /^\/thesaurize$/;
-  const wednesdayRegex = /^\/wednesday$/;
 
-  if (reqBody.user_id && spewRegex.test(reqBody.text)) {
+  if (!reqBody.text) return null;
+  const text = reqBody.text.trim().toLowerCase();
+
+  if (text === '/spew') {
     return new SpewCommand();
-  } else if (reqBody.text && (coolGuyRegex.test(reqBody.text) || coolGuyRegexWithSpace.test(reqBody.text))) {
+  } else if (text === '/coolguy' || text === '/cool guy') {
     return new CoolGuyCommand();
-  } else if (reqBody.text && thesaurusRegex.test(reqBody.text)) {
+  } else if (text === '/thesaurize') {
     return new ThesaurizeCommand();
-  } else if (reqBody.text && hereRegex.test(reqBody.text)) {
+  } else if (text.includes('@here')) {
     return new HereCommand();
-  } else if (reqBody.text && awardsRegex.test(reqBody.text)) {
+  } else if (text === '/awards') {
     return new AwardsCommand();
-  } else if (reqBody.text && wednesdayRegex.test(reqBody.text)) {
+  } else if (text === '/wed' || text === '/wednesday') {
     return new WednesdayCommand();
   }
   else return null;

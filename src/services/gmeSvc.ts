@@ -1,7 +1,7 @@
-import Spew = require('../models/SpewModel');
+import Spew = require('../models/Mongo/SpewModel');
 import groupmeApiSvc = require('./groupmeApiSvc');
 import _ = require('lodash');
-import { GroupmeUserModel } from '../models/GroupmeUserModel';
+import { GroupmeUserModel } from '../models/Groupme/GroupmeUserModel';
 
 function addSpew(userId: number): Promise<string> {
   return Spew.findOne({ gmeUserId: userId }).then(result => {

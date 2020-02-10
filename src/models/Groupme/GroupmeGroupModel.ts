@@ -1,5 +1,4 @@
 import { GroupmeUserModel } from "./GroupmeUserModel";
-import _ = require("lodash");
 
 export class GroupmeGroupModel {
   /** This is the unix time format as provided by GroupMe. Use created_at_date instead */
