@@ -3,9 +3,9 @@ import awardsSvc = require('./awardSvc');
 import express = require('express');
 import CommandFactory = require('./commandFactory');
 import { ClientRequest } from 'http';
+import { SenderType } from '../constants/GroupmeSenderType';
 import { BotResponseModel } from '../models/BotResponseModel';
-import { GroupmeMessageModel } from '../models/GroupmeMessageModel';
-import { SenderType } from '../models/GroupmeSenderType';
+import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 
 async function respond(reqBody: GroupmeMessageModel, response: express.Response): Promise<void> {
   if (reqBody.text) reqBody.text = reqBody.text.trim().toLowerCase();

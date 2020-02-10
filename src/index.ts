@@ -1,9 +1,9 @@
 import express = require('express');
 import bodyParser = require('body-parser');
 import mongoose = require('mongoose');
-import BotService = require('../services/botSvc')
-import DailyUserPostCounter = require('../models/DailyUserPostCounterModel');
-import { GroupmeMessageModel } from '../models/GroupmeMessageModel';
+import BotService = require('./services/botSvc')
+import DailyUserPostCounter = require('./models/Mongo/DailyUserPostCounterModel');
+import { GroupmeMessageModel } from './models/Groupme/GroupmeMessageModel';
 
 // Configure dev environment variables
 if (process.env.NODE_ENV !== "production") {

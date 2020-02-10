@@ -1,6 +1,6 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
 import { Command } from "../../models/CommandModel";
-import { GroupmeMessageModel } from "../../models/GroupmeMessageModel";
+import { GroupmeMessageModel } from "../../models/Groupme/GroupmeMessageModel";
 
 import GroupMeService = require('../../services/gmeSvc');
 

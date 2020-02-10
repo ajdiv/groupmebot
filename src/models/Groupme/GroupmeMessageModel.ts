@@ -1,5 +1,5 @@
+import { SenderType } from "../../constants/GroupmeSenderType";
 import { GroupmeAttachmentModel } from "./GroupmeAttachmentModel";
-import { SenderType } from "./GroupmeSenderType";
 import _ = require("lodash");
 
 export class GroupmeMessageModel {

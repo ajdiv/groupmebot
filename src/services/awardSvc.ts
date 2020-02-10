@@ -1,10 +1,10 @@
 import _ = require('lodash');
 import moment = require('moment');
 
-import DailyUserPostCounter = require('../models/DailyUserPostCounterModel');
+import DailyUserPostCounter = require('../models/Mongo/DailyUserPostCounterModel');
 import groupmeApiSvc = require('./groupmeApiSvc');
-import { GroupmeMessageModel } from '../models/GroupmeMessageModel';
-import { SenderType } from '../models/GroupmeSenderType';
+import { SenderType } from '../constants/GroupmeSenderType';
+import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 import { UserStatsModel } from '../models/UserStatsModel';
 
 function addMsgCounter(gmeUserId: number, gmeGroupId: number): Promise<void> {

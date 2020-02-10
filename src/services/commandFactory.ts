@@ -1,5 +1,5 @@
 import { Command } from '../models/CommandModel';
-import { GroupmeMessageModel } from '../models/GroupmeMessageModel';
+import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 import { AwardsCommand } from './commands/awardsCommand';
 import { CoolGuyCommand } from './commands/coolGuyCommand';
 import { HereCommand } from './commands/hereCommand';

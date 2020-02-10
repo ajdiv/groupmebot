@@ -1,5 +1,5 @@
+import { GroupmeAttachmentType } from "../../constants/GroupmeAttachmentType";
 import { GroupmeAttachmentModel } from "./GroupmeAttachmentModel";
-import { GroupmeAttachmentType } from "./GroupmeAttachmentType";
 
 export class GroupmeMentionsAttachmentModel implements GroupmeAttachmentModel {
   public type: GroupmeAttachmentType = GroupmeAttachmentType.Mentions;

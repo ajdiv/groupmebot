@@ -2,9 +2,9 @@
   "name": "node-js-getting-started",
   "version": "0.1.2",
   "description": "A sample Node.js app using Express 4",
-  "main": "dist/routes/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/routes/index.js",
+    "start": "node dist/index.js",
     "test": "mocha test/**/*.js",
     "prestart": "npm run build",
     "build": "tsc"

@@ -1,4 +1,4 @@
-import { GroupmeAttachmentModel } from "./GroupmeAttachmentModel";
+import { GroupmeAttachmentModel } from "./Groupme/GroupmeAttachmentModel";
 
 export class BotResponseModel {
   text: string;
