@@ -1,4 +1,4 @@
-import { GroupmeUserRoles } from "./GroupmeUserRoles";
+import { GroupmeUserRoles } from "../../constants/GroupmeUserRoles";
 
 export class GroupmeUserModel {
 

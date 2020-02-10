@@ -1,7 +1,7 @@
+import moment = require('moment');
 import { BotResponseModel } from "../../models/BotResponseModel";
 import { Command } from "../../models/CommandModel";
 
-import moment = require('moment');
 
 export class WednesdayCommand implements Command {
 

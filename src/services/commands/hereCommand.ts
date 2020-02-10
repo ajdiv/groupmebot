@@ -1,6 +1,6 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
 import { Command } from "../../models/CommandModel";
-import { GroupmeMentionsAttachmentModel } from "../../models/GroupmeMentionsAttachmentModel";
+import { GroupmeMentionsAttachmentModel } from "../../models/Groupme/GroupmeMentionsAttachmentModel";
 
 import GroupMeService = require('../gmeSvc');
 
