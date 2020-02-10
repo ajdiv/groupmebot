@@ -1,6 +1,5 @@
 import { SenderType } from "../../constants/GroupmeSenderType";
 import { GroupmeAttachmentModel } from "./GroupmeAttachmentModel";
-import _ = require("lodash");
 
 export class GroupmeMessageModel {
   /** This is the unix time format as provided by GroupMe. Use created_at_date instead */

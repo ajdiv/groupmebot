@@ -1,5 +1,5 @@
 import request = require('request-promise');
-import _ = require("lodash");
+import _ = require('lodash');
 import { GroupmeGroupModel } from '../models/Groupme/GroupmeGroupModel';
 import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 import qs = require('querystring');

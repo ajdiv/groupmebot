@@ -1,42 +1,10 @@
 import _ = require('lodash');
 import moment = require('moment');
-
-import DailyUserPostCounter = require('../models/Mongo/DailyUserPostCounterModel');
-import groupmeApiSvc = require('./groupmeApiSvc');
 import { SenderType } from '../constants/GroupmeSenderType';
 import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 import { UserStatsModel } from '../models/UserStatsModel';
 
-function addMsgCounter(gmeUserId: number, gmeGroupId: number): Promise<void> {
-  if (!gmeUserId) return Promise.resolve();
-
-  var time = getTodayAndTomorrow();
-  var begin = time[0];
-  var end = time[1];
-
-  //Find existing message counter for today. If doesn't exist, create one
-  return DailyUserPostCounter.findOne(
-    {
-      gmeUserId: gmeUserId,
-      gmeGroupId: gmeGroupId,
-      date: { $gte: begin, $lt: end }
-    }).then(result => {
-      if (!result) {
-        let counter = new DailyUserPostCounter({
-          gmeUserId: gmeUserId,
-          gmeGroupId: gmeGroupId,
-          messageCount: 1,
-          date: moment().valueOf()
-        });
-        return counter.save();
-      } else {
-        result.messageCount++;
-        return result.save();
-      }
-    }).then(() => {
-      return Promise.resolve()
-    });
-}
+import groupmeApiSvc = require('./groupmeApiSvc');
 
 async function getAwards(): Promise<string> {
 
@@ -133,6 +101,5 @@ function getTodayAndTomorrow() {
 }
 
 export = {
-  addMsgCounter: addMsgCounter,
   getAwards: getAwards
 }

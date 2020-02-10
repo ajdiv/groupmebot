@@ -1,16 +1,12 @@
 import HTTPS = require('https');
-import awardsSvc = require('./awardSvc');
 import express = require('express');
 import CommandFactory = require('./commandFactory');
 import { ClientRequest } from 'http';
-import { SenderType } from '../constants/GroupmeSenderType';
 import { BotResponseModel } from '../models/BotResponseModel';
 import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 
 async function respond(reqBody: GroupmeMessageModel, response: express.Response): Promise<void> {
   if (reqBody.text) reqBody.text = reqBody.text.trim().toLowerCase();
-
-  await logMessage(reqBody);
 
   let responseMsg: string;
   response.writeHead(200);
@@ -23,15 +19,6 @@ async function respond(reqBody: GroupmeMessageModel, response: express.Response)
   }
 
   response.end(responseMsg);
-}
-
-function logMessage(requestBody: GroupmeMessageModel): Promise<void> {
-  if (requestBody.sender_type === SenderType.User) {
-    return awardsSvc.addMsgCounter(parseInt(requestBody.user_id), requestBody.group_id);
-  } else {
-    // It's a bot - let's not record this message
-    return Promise.resolve();
-  }
 }
 
 function sendBotResponse(responseModel: BotResponseModel) {
