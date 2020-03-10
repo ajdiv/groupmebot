@@ -5,4 +5,3 @@ export function pickRandomWord(synArr: string[]) {
     var result = synArr[Math.floor(Math.random() * synArr.length)];
     return result;
   };
-
