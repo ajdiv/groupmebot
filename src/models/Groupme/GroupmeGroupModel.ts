@@ -15,19 +15,19 @@ export class GroupmeGroupModel {
   public phone_number: string;
 
   public get created_at_date(): Date {
-    return new Date(this.created_at * 1000);
+    return this.created_at ? new Date(this.created_at * 1000) : null;
   };
 
   public set created_at_date(dateObj: Date) {
-    this.created_at = dateObj.getTime() / 1000;
+    this.created_at = dateObj ? dateObj.getTime() / 1000 : null;
   };
 
   public get updated_at_date(): Date {
-    return new Date(this.updated_at * 1000);
+    return this.updated_at ? new Date(this.updated_at * 1000) : null;
   };
 
   public set updated_at_date(dateObj: Date) {
-    this.updated_at = dateObj.getTime() / 1000;
+    this.updated_at = dateObj ? dateObj.getTime() / 1000 : null;
   };
 
   constructor() { }
