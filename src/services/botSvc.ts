@@ -1,7 +1,7 @@
 import HTTPS = require('https');
 import express = require('express');
-import CommandFactory = require('./commandFactory');
 import { ClientRequest } from 'http';
+import { CommandList } from '../commands/commandFactory';
 import { BotResponseModel } from '../models/BotResponseModel';
 import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 
@@ -11,7 +11,8 @@ async function respond(reqBody: GroupmeMessageModel, response: express.Response)
   let responseMsg: string;
   response.writeHead(200);
 
-  const command = CommandFactory.getCommand(reqBody);
+  const command = CommandList.getCommand(reqBody.text);
+  //const command = CommandFactory.getCommand(reqBody);
   if (command) {
     const results = await command.execute(reqBody);
     responseMsg = results.text;
