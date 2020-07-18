@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "test": "mocha test/**/*.js",
+    "test": "ts-mocha test/**/*.ts",
     "prestart": "npm run build",
     "build": "tsc"
   },
@@ -47,8 +47,14 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@types/chai": "^4.2.10",
     "@types/lodash": "^4.14.135",
+    "@types/mocha": "^7.0.2",
+    "@types/sinon": "^7.5.2",
     "chai": "^4.2.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "mocha-typescript": "^1.1.17",
+    "sinon": "^9.0.0",
+    "ts-mocha": "^6.0.0"
   }
 }
