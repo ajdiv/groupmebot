@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "test": "ts-mocha test/**/*.ts",
+    "test": "ts-mocha src/**/*.spec.ts",
     "prestart": "npm run build",
     "build": "tsc"
   },
