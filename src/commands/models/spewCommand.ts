@@ -9,6 +9,7 @@ export class SpewCommand implements Command {
 
   commandText = ['/spew'];
   commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'count how many times you spewed';
 
   constructor() { }
 

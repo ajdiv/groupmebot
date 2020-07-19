@@ -10,8 +10,8 @@ async function respond(reqBody: GroupmeMessageModel, response: express.Response)
 
   let responseMsg: string;
   response.writeHead(200);
-
-  const command = CommandList.getCommand(reqBody.text);
+  const commandList = new CommandList();
+  const command = commandList.getCommand(reqBody.text);
   //const command = CommandFactory.getCommand(reqBody);
   if (command) {
     const results = await command.execute(reqBody);

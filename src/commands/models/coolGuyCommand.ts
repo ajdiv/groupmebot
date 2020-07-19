@@ -9,6 +9,7 @@ export class CoolGuyCommand implements Command {
 
   commandText = ['/coolguy', '/cool guy'];
   commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'makes you a cool guy';
 
   constructor() { }
 

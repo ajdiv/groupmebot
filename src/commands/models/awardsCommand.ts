@@ -8,6 +8,7 @@ export class AwardsCommand implements Command {
 
   commandText = ['/awards'];
   commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'gets the most active and most liked messages from today';
 
   async execute(): Promise<BotResponseModel> {
     const result = await AwardsService.getAwards();

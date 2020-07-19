@@ -9,6 +9,7 @@ export class ThesaurizeCommand implements Command {
 
   commandText = ['/thesaurize'];
   commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'get synonyms of the previous message';
 
   constructor() { }
 
