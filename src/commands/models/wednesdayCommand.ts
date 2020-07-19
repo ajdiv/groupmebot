@@ -1,9 +1,14 @@
 import moment = require('moment');
 import { BotResponseModel } from "../../models/BotResponseModel";
-import { Command } from "../../models/CommandModel";
+import { CommandCheckLocation } from '../constants/commandCheckLocation';
+import { Command } from "./command";
 
 
 export class WednesdayCommand implements Command {
+
+  commandText = ['/wed', '/wednesday'];
+  commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'check what day it is';
 
   private readonly dayINeed: number;
 

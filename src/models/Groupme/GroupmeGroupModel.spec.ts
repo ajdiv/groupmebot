@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { GroupmeGroupModel } from '../../src/models/Groupme/GroupmeGroupModel';
+import { GroupmeGroupModel } from './GroupmeGroupModel';
 
 describe('Groupme Group Model Time Tests', () => {
   it('should return a proper created_at_date after setting one', () => {

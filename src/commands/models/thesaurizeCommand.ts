@@ -1,10 +1,15 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
-import { Command } from "../../models/CommandModel";
+import { CommandCheckLocation } from "../constants/commandCheckLocation";
+import { Command } from "./command";
 
 import GroupMeService = require('../../services/gmeSvc');
 import ThesaurusService = require('../../services/thesaurusSvc');
 
 export class ThesaurizeCommand implements Command {
+
+  commandText = ['/thesaurize'];
+  commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'get synonyms of the previous message';
 
   constructor() { }
 

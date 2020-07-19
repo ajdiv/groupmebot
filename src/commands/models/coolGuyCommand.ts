@@ -1,10 +1,15 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
-import { Command } from "../../models/CommandModel";
+import { CommandCheckLocation } from "../constants/commandCheckLocation";
+import { Command } from "./command";
 
 // Can't import this guy because it doesn't have any types
 const cool = require('cool-ascii-faces');
 
 export class CoolGuyCommand implements Command {
+
+  commandText = ['/coolguy', '/cool guy'];
+  commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'makes you a cool guy';
 
   constructor() { }
 

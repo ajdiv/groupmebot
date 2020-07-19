@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { parseAndScrub, pickRandomWord, wordCanSynonym } from '../../src/utilities/textUtilities';
+import { parseAndScrub, pickRandomWord, wordCanSynonym } from './textUtilities';
 
 describe('Word Randomization Tests', () => {
   it('should return one single word given an array of multiple strings', () => {

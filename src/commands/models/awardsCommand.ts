@@ -1,11 +1,14 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
-import { Command } from "../../models/CommandModel";
+import { CommandCheckLocation } from "../constants/commandCheckLocation";
+import { Command } from "./command";
 
 import AwardsService = require('../../services/awardSvc');
 
 export class AwardsCommand implements Command {
 
-  constructor() { }
+  commandText = ['/awards'];
+  commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'gets the most active and most liked messages from today';
 
   async execute(): Promise<BotResponseModel> {
     const result = await AwardsService.getAwards();
