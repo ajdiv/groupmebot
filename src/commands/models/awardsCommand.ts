@@ -9,8 +9,6 @@ export class AwardsCommand implements Command {
   commandText = ['/awards'];
   commandCheckLocation = CommandCheckLocation.Start;
 
-  constructor() { }
-
   async execute(): Promise<BotResponseModel> {
     const result = await AwardsService.getAwards();
     return Promise.resolve(new BotResponseModel(result, null));
