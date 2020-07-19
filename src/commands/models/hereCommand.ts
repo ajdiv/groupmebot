@@ -1,10 +1,14 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
-import { Command } from "../../models/CommandModel";
 import { GroupmeMentionsAttachmentModel } from "../../models/Groupme/GroupmeMentionsAttachmentModel";
+import { CommandCheckLocation } from "../constants/commandCheckLocation";
+import { Command } from "./command";
 
-import GroupMeService = require('../gmeSvc');
+import GroupMeService = require('../../services/gmeSvc');
 
 export class HereCommand implements Command {
+
+  commandText = ['@here'];
+  commandCheckLocation = CommandCheckLocation.Contains;
 
   private currentLocusIndex: number;
   private lociArray: [number, number][];

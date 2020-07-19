@@ -1,10 +1,14 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
-import { Command } from "../../models/CommandModel";
 import { GroupmeMessageModel } from "../../models/Groupme/GroupmeMessageModel";
+import { CommandCheckLocation } from "../constants/commandCheckLocation";
+import { Command } from "./command";
 
 import GroupMeService = require('../../services/gmeSvc');
 
 export class SpewCommand implements Command {
+
+  commandText = ['/spew'];
+  commandCheckLocation = CommandCheckLocation.Start;
 
   constructor() { }
 
