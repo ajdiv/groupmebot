@@ -2,16 +2,18 @@ import HTTPS = require('https');
 import express = require('express');
 import { ClientRequest } from 'http';
 import { CommandList } from '../commands/commandFactory';
+import { SenderType } from '../constants/GroupmeSenderType';
 import { BotResponseModel } from '../models/BotResponseModel';
 import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
 
 async function respond(reqBody: GroupmeMessageModel, response: express.Response): Promise<void> {
+  if(reqBody.sender_type === SenderType.Bot) return Promise.resolve();
   if (reqBody.text) reqBody.text = reqBody.text.trim().toLowerCase();
 
   let responseMsg: string;
   response.writeHead(200);
-
-  const command = CommandList.getCommand(reqBody.text);
+  const commandList = new CommandList();
+  const command = commandList.getCommand(reqBody.text);
   //const command = CommandFactory.getCommand(reqBody);
   if (command) {
     const results = await command.execute(reqBody);

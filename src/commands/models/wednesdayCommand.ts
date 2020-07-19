@@ -8,6 +8,7 @@ export class WednesdayCommand implements Command {
 
   commandText = ['/wed', '/wednesday'];
   commandCheckLocation = CommandCheckLocation.Start;
+  helpText = 'check what day it is';
 
   private readonly dayINeed: number;
 

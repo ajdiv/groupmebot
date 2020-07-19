@@ -2,22 +2,25 @@ import { CommandCheckLocation } from "./constants/commandCheckLocation";
 import { AwardsCommand } from "./models/awardsCommand";
 import { Command } from "./models/command";
 import { CoolGuyCommand } from "./models/coolGuyCommand";
+import { HelpCommand } from "./models/helpCommand";
 import { HereCommand } from "./models/hereCommand";
 import { SpewCommand } from "./models/spewCommand";
 import { ThesaurizeCommand } from "./models/thesaurizeCommand";
 import { WednesdayCommand } from "./models/wednesdayCommand";
+import _ = require("lodash");
 
 export class CommandList {
-  private static readonly commandList: Command[] = [
+  private readonly commandList: Command[] = [
     new AwardsCommand(),
     new CoolGuyCommand(),
     new HereCommand(),
     new SpewCommand(),
     new ThesaurizeCommand(),
-    new WednesdayCommand()
+    new WednesdayCommand(),
+    new HelpCommand()
   ];
 
-  static getCommand(text: string): Command {
+  getCommand(text: string): Command {
     if (!text) return null;
 
     let result: Command = null;
@@ -29,7 +32,18 @@ export class CommandList {
     return result;
   }
 
-  private static doesCmdTextMatch(messageTxt: string, command: Command): boolean {
+  getHelpText(): string {
+    let result = '';
+    this.commandList.forEach(
+      (command: Command) => {
+        let commandText = _.join(command.commandText,' or ');
+        result += `${commandText}: ${command.helpText}`;
+        result += '\n';
+      })
+    return result;
+  }
+
+  private doesCmdTextMatch(messageTxt: string, command: Command): boolean {
     let match = false;
     for (let i = 0; i < command.commandText.length; i++) {
       let commandTxt = command.commandText[i];

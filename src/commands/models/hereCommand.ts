@@ -9,6 +9,7 @@ export class HereCommand implements Command {
 
   commandText = ['@here'];
   commandCheckLocation = CommandCheckLocation.Contains;
+  helpText = 'notifies everyone in the group, regardless of their mute settings';
 
   private currentLocusIndex: number;
   private lociArray: [number, number][];

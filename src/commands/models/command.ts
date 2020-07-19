@@ -6,6 +6,7 @@ export interface Command {
 
   commandText: string[];
   commandCheckLocation: CommandCheckLocation;
+  helpText: string;
 
   execute(botRequestBody: GroupmeMessageModel): Promise<BotResponseModel>;
 }
