@@ -36,7 +36,7 @@ Here's a sample body of a GroupMe POST when sending a message:
 Requests should have a content type of application/json and should be made to your localhost (port 5000 by default): http://127.0.0.1:5000/
 
 Run locally by executing the following command: npm run start
-Run tests by executing the following command:
+Run tests by executing the following command: npm run test
 
 ## Environment File<a name="env"></a>
 
