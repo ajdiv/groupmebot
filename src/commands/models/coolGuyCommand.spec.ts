@@ -1,5 +1,6 @@
 import sinon = require('sinon');
 import { expect } from 'chai';
+import 'mocha';
 import { CoolGuyCommand } from './coolGuyCommand';
 
 const proxyquire = require('proxyquire')

@@ -1,7 +1,7 @@
 import _ = require('lodash');
 import moment = require('moment');
 import { SenderType } from '../constants/GroupmeSenderType';
-import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
+import GroupmeMessageModel from '../models/Groupme/GroupmeMessageModel';
 import { UserStatsModel } from '../models/UserStatsModel';
 
 import groupmeApiSvc = require('./groupmeApiSvc');

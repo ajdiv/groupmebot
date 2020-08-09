@@ -1,5 +1,5 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
-import { GroupmeMessageModel } from "../../models/Groupme/GroupmeMessageModel";
+import GroupmeMessageModel from "../../models/Groupme/GroupmeMessageModel";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
 
