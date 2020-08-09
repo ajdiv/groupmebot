@@ -1,3 +1,4 @@
+import { injectable } from "inversify";
 import { CommandCheckLocation } from "./constants/commandCheckLocation";
 import { AwardsCommand } from "./models/awardsCommand";
 import { Command } from "./models/command";
@@ -9,7 +10,8 @@ import { ThesaurizeCommand } from "./models/thesaurizeCommand";
 import { WednesdayCommand } from "./models/wednesdayCommand";
 import _ = require("lodash");
 
-export class CommandList {
+@injectable()
+export default class CommandFactory {
   private readonly commandList: Command[] = [
     new AwardsCommand(),
     new CoolGuyCommand(),

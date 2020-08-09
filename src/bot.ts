@@ -2,13 +2,13 @@ import HTTPS = require('https');
 import express = require('express');
 import { ClientRequest } from 'http';
 import { injectable } from 'inversify';
-import { CommandList } from '../commands/commandFactory';
-import { SenderType } from '../constants/GroupmeSenderType';
-import { BotResponseModel } from '../models/BotResponseModel';
-import GroupmeMessageModel from '../models/Groupme/GroupmeMessageModel';
+import CommandFactory from './commands/commandFactory';
+import { SenderType } from './constants/GroupmeSenderType';
+import { BotResponseModel } from './models/BotResponseModel';
+import GroupmeMessageModel from './models/Groupme/GroupmeMessageModel';
 
 @injectable()
-export default class BotSvc {
+export default class Bot {
 
   constructor() { }
 
@@ -18,9 +18,8 @@ export default class BotSvc {
 
     let responseMsg: string;
     response.writeHead(200);
-    const commandList = new CommandList();
+    const commandList = new CommandFactory();
     const command = commandList.getCommand(reqBody.text);
-    //const command = CommandFactory.getCommand(reqBody);
     if (command) {
       const results = await command.execute(reqBody);
       responseMsg = results.text;

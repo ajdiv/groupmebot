@@ -1,9 +1,9 @@
 import { Container } from "inversify";
 import "reflect-metadata";
-import BotService from './services/botSvc';
+import Bot from "./bot";
 
 let container = new Container();
 
-container.bind<BotService>(BotService).to(BotService).inSingletonScope();
+container.bind<Bot>(Bot).to(Bot).inSingletonScope();
 
 export default container;

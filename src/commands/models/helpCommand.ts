@@ -1,5 +1,5 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
-import { CommandList } from "../commandFactory";
+import CommandFactory from "../commandFactory";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
 
@@ -12,7 +12,7 @@ export class HelpCommand implements Command {
   constructor() { }
 
   async execute(): Promise<BotResponseModel> {
-    let commandList = new CommandList();
+    let commandList = new CommandFactory();
     let helpText = commandList.getHelpText();
     const result = new BotResponseModel(helpText, null);
     return result;

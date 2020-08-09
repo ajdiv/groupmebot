@@ -1,9 +1,9 @@
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as mongoose from 'mongoose';
+import Bot from './bot';
 import container from "./inversify.config";
 import GroupmeMessageModel from './models/Groupme/GroupmeMessageModel';
-import BotService from './services/botSvc';
 
 // Configure dev environment variables
 if (process.env.NODE_ENV !== "production") {
@@ -27,10 +27,10 @@ app.listen(port, () => {
 });
 
 // Define REST Methods
-let botSvc = container.get<BotService>(BotService);
-app.post('/', function (req: express.Request, res: express.Response) {
+let bot = container.get<Bot>(Bot);
+app.post('/', function (req: express.Request, res: express.Response): Promise<void> {
   const rawJson = JSON.stringify(req.body);
-  console.log('This is the request object I got: ' + rawJson);
+  console.log('Received: ' + rawJson);
   let requestModel: GroupmeMessageModel = Object.assign(new GroupmeMessageModel(), req.body);
-  return botSvc.respond(requestModel, res);
+  return bot.respond(requestModel, res);
 });
