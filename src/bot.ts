@@ -1,7 +1,7 @@
 import HTTPS = require('https');
 import express = require('express');
 import { ClientRequest } from 'http';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import CommandFactory from './commands/commandFactory';
 import { SenderType } from './constants/GroupmeSenderType';
 import { BotResponseModel } from './models/BotResponseModel';
@@ -10,7 +10,11 @@ import GroupmeMessageModel from './models/Groupme/GroupmeMessageModel';
 @injectable()
 export default class Bot {
 
-  constructor() { }
+  commandFactory: CommandFactory;
+
+  constructor(@inject(CommandFactory) cmdFactory: CommandFactory) {
+    this.commandFactory = cmdFactory;
+  }
 
   async respond(reqBody: GroupmeMessageModel, response: express.Response): Promise<void> {
     if (reqBody.sender_type === SenderType.Bot) return Promise.resolve();
@@ -18,8 +22,7 @@ export default class Bot {
 
     let responseMsg: string;
     response.writeHead(200);
-    const commandList = new CommandFactory();
-    const command = commandList.getCommand(reqBody.text);
+    const command = this.commandFactory.getCommand(reqBody.text);
     if (command) {
       const results = await command.execute(reqBody);
       responseMsg = results.text;
