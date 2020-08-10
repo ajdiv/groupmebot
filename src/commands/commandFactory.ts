@@ -1,32 +1,18 @@
 import { injectable } from "inversify";
 import { CommandCheckLocation } from "./constants/commandCheckLocation";
-import { AwardsCommand } from "./models/awardsCommand";
+import allCommands from './constants/commandList';
 import { Command } from "./models/command";
-import { CoolGuyCommand } from "./models/coolGuyCommand";
-import { HelpCommand } from "./models/helpCommand";
-import { HereCommand } from "./models/hereCommand";
-import { SpewCommand } from "./models/spewCommand";
-import { ThesaurizeCommand } from "./models/thesaurizeCommand";
-import { WednesdayCommand } from "./models/wednesdayCommand";
 import _ = require("lodash");
 
 @injectable()
 export default class CommandFactory {
-  private readonly commandList: Command[] = [
-    new AwardsCommand(),
-    new CoolGuyCommand(),
-    new HereCommand(),
-    new SpewCommand(),
-    new ThesaurizeCommand(),
-    new WednesdayCommand(),
-    new HelpCommand()
-  ];
 
   getCommand(text: string): Command {
     if (!text) return null;
-
     let result: Command = null;
-    this.commandList.forEach(
+
+    let commandList = this.generateCommandList();
+    commandList.forEach(
       (command: Command) => {
         let isMatch = this.doesCmdTextMatch(text, command);
         if (isMatch) result = command;
@@ -36,13 +22,18 @@ export default class CommandFactory {
 
   getHelpText(): string {
     let result = '';
-    this.commandList.forEach(
+    let commandList = this.generateCommandList();
+    commandList.forEach(
       (command: Command) => {
-        let commandText = _.join(command.commandText,' or ');
+        let commandText = _.join(command.commandText, ' or ');
         result += `${commandText}: ${command.helpText}`;
         result += '\n';
       })
     return result;
+  }
+
+  private create<T>(model: new () => T): T {
+    return new model();
   }
 
   private doesCmdTextMatch(messageTxt: string, command: Command): boolean {
@@ -65,5 +56,16 @@ export default class CommandFactory {
       if (match) break; // Stop once we found a match
     }
     return match;
+  }
+
+  private generateCommandList(): Command[] {
+    let results: Command[] = [];
+    allCommands.forEach(x => {
+      // This isn't ideal, but basically we're just trying to create a new instance
+      // of the class that inherits from the Command interface
+      let command = this.create(x as any) as Command;
+      results.push(command);
+    })
+    return results;
   }
 }
