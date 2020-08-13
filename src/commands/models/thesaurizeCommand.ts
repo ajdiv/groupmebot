@@ -1,9 +1,9 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
+import { GroupmeTool } from "../../tools/groupmeTool";
+import { ThesaurusTool } from "../../tools/thesaurusTool";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
 
-import GroupMeService = require('../../services/gmeSvc');
-import ThesaurusService = require('../../services/thesaurusSvc');
 
 export class ThesaurizeCommand implements Command {
 
@@ -14,8 +14,8 @@ export class ThesaurizeCommand implements Command {
   constructor() { }
 
   async execute(): Promise<BotResponseModel> {
-    const lastText = await GroupMeService.getLastMessageText();
-    const result = await ThesaurusService.thesaurize(lastText);
+    const lastText = await GroupmeTool.getLastMessageText();
+    const result = await ThesaurusTool.thesaurize(lastText);
     return new BotResponseModel(result, null);
   }
 }

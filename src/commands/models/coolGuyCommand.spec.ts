@@ -1,8 +1,7 @@
-import sinon = require('sinon');
 import { expect } from 'chai';
+import 'mocha';
 import { CoolGuyCommand } from './coolGuyCommand';
 
-const proxyquire = require('proxyquire')
 const cool = require('cool-ascii-faces');
 
 describe('Cool Guy Command Tests', () => {
