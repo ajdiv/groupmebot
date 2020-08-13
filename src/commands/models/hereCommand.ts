@@ -1,9 +1,9 @@
 import { BotResponseModel } from "../../models/BotResponseModel";
 import { GroupmeMentionsAttachmentModel } from "../../models/Groupme/GroupmeMentionsAttachmentModel";
+import { GroupmeTool } from "../../tools/groupmeTool";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
 
-import GroupMeService = require('../../services/gmeSvc');
 
 export class HereCommand implements Command {
 
@@ -41,7 +41,7 @@ export class HereCommand implements Command {
   //   }
   // ]
   async execute(): Promise<BotResponseModel> {
-    const allGroupMembers = await GroupMeService.getAllUsersInCurrentGroup();
+    const allGroupMembers = await GroupmeTool.getAllUsersInCurrentGroup();
     this.buildTagProperties(allGroupMembers);
     const mentionsAttachment = new GroupmeMentionsAttachmentModel(this.lociArray, this.userIds);
     const result = new BotResponseModel(this.responseText, [mentionsAttachment]);
