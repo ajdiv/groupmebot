@@ -1,13 +1,12 @@
-import { injectable } from "inversify";
+import _ from "lodash";
 import { CommandCheckLocation } from "./constants/commandCheckLocation";
-import allCommands from './constants/commandList';
+import { CommandList } from "./constants/commandList";
 import { Command } from "./models/command";
-import _ = require("lodash");
 
-@injectable()
-export default class CommandFactory {
 
-  getCommand(text: string): Command {
+export abstract class CommandFactory {
+
+  static getCommand(text: string): Command {
     if (!text) return null;
     let result: Command = null;
 
@@ -20,7 +19,7 @@ export default class CommandFactory {
     return result;
   }
 
-  getHelpText(): string {
+  static getHelpText(): string {
     let result = '';
     let commandList = this.generateCommandList();
     commandList.forEach(
@@ -32,11 +31,11 @@ export default class CommandFactory {
     return result;
   }
 
-  private create<T>(model: new () => T): T {
+  private static  create<T>(model: new () => T): T {
     return new model();
   }
 
-  private doesCmdTextMatch(messageTxt: string, command: Command): boolean {
+  private static doesCmdTextMatch(messageTxt: string, command: Command): boolean {
     let match = false;
     for (let i = 0; i < command.commandText.length; i++) {
       let commandTxt = command.commandText[i];
@@ -58,8 +57,9 @@ export default class CommandFactory {
     return match;
   }
 
-  private generateCommandList(): Command[] {
+  private static generateCommandList(): Command[] {
     let results: Command[] = [];
+    let allCommands = CommandList.allCommands;
     allCommands.forEach(x => {
       // This isn't ideal, but basically we're just trying to create a new instance
       // of the class that inherits from the Command interface

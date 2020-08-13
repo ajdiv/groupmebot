@@ -1,7 +1,7 @@
 import { SenderType } from "../../constants/GroupmeSenderType";
 import { GroupmeAttachmentModel } from "./GroupmeAttachmentModel";
 
-export default class GroupmeMessageModel {
+export class GroupmeMessageModel {
   /** This is the unix time format as provided by GroupMe. Use created_at_date instead */
   private created_at: number;
 
