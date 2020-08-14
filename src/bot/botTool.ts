@@ -1,12 +1,12 @@
 import { Response } from 'express';
 import { ClientRequest } from 'http';
 import { request, RequestOptions } from 'https';
-import { CommandFactory } from './commands/commandFactory';
-import { SenderType } from './constants/GroupmeSenderType';
-import { BotResponseModel } from './models/BotResponseModel';
-import { GroupmeMessageModel } from './models/Groupme/GroupmeMessageModel';
+import { CommandFactory } from '../commands/commandFactory';
+import { SenderType } from '../constants/GroupmeSenderType';
+import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
+import { BotResponseModel } from './models/botResponseModel';
 
-export class Bot {
+export class BotTool {
 
   private static readonly GROUPME_HOSTNAME: string = 'api.groupme.com';
   private static readonly GROUPME_PATH: string = '/v3/bots/post';

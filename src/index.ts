@@ -2,7 +2,7 @@
 import { urlencoded } from 'body-parser';
 import express from 'express';
 import { connect, connection } from 'mongoose';
-import { Bot } from './bot';
+import { BotTool } from './bot/botTool';
 import { GroupmeMessageModel } from './models/Groupme/GroupmeMessageModel';
 
 // Configure dev environment variables
@@ -32,5 +32,5 @@ app.post('/', function (req: express.Request, res: express.Response): Promise<vo
   const rawJson = JSON.stringify(req.body);
   console.log('Received: ' + rawJson);
   let requestModel: GroupmeMessageModel = Object.assign(new GroupmeMessageModel(), req.body);
-  return Bot.respond(requestModel, res);
+  return BotTool.respond(requestModel, res);
 });

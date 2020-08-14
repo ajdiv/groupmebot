@@ -1,4 +1,4 @@
-import { BotResponseModel } from "../../models/BotResponseModel";
+import { BotResponseModel } from "../../bot/models/botResponseModel";
 import { AwardsTool } from "../../tools/awardsTool";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
