@@ -1,6 +1,6 @@
-import { GroupmeUserModel } from "./GroupmeUserModel";
+import { User } from "./user";
 
-export class GroupmeGroupModel {
+export class Group {
   /** This is the unix time format as provided by GroupMe. Use created_at_date instead */
   private created_at: number;
   /** This is the unix time format as provided by GroupMe. Use updated_at_date instead */
@@ -10,7 +10,7 @@ export class GroupmeGroupModel {
   public description: string;
   public group_id: string;
   public image_url: string;
-  public members: GroupmeUserModel[];
+  public members: User[];
   public name: string;
   public phone_number: string;
 

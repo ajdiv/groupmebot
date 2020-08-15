@@ -3,12 +3,12 @@ import { urlencoded } from 'body-parser';
 import express from 'express';
 import { connect, connection } from 'mongoose';
 import { BotTool } from './bot/botTool';
-import { GroupmeMessageModel } from './models/Groupme/GroupmeMessageModel';
+import { Message } from './groupme/models/message';
 
 // Configure dev environment variables
 if (process.env.NODE_ENV !== "production") {
   const dotenv = require("dotenv");
-  dotenv.config({ path: 'config/env' });
+  dotenv.config({ path: 'config/.env' });
 }
 
 // Configure DB
@@ -31,6 +31,6 @@ app.listen(port, () => {
 app.post('/', function (req: express.Request, res: express.Response): Promise<void> {
   const rawJson = JSON.stringify(req.body);
   console.log('Received: ' + rawJson);
-  let requestModel: GroupmeMessageModel = Object.assign(new GroupmeMessageModel(), req.body);
-  return BotTool.respond(requestModel, res);
+  let requestModel: Message = Object.assign(new Message(), req.body);
+  return BotTool.readMessageAndRespond(requestModel, res);
 });

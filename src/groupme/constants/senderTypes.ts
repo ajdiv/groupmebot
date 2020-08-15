@@ -1,4 +1,4 @@
-export enum SenderType {
+export enum SenderTypes {
   Bot = 'bot',
   User = 'user'
 }

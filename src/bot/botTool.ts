@@ -2,40 +2,46 @@ import { Response } from 'express';
 import { ClientRequest } from 'http';
 import { request, RequestOptions } from 'https';
 import { CommandFactory } from '../commands/commandFactory';
-import { SenderType } from '../constants/GroupmeSenderType';
-import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
-import { BotResponseModel } from './models/botResponseModel';
+import { SenderTypes } from '../groupme/constants/senderTypes';
+import { Message } from '../groupme/models/message';
+import { BotResponse } from './botResponse';
 
 export class BotTool {
 
   private static readonly GROUPME_HOSTNAME: string = 'api.groupme.com';
   private static readonly GROUPME_PATH: string = '/v3/bots/post';
 
-  static async respond(reqBody: GroupmeMessageModel, response: Response): Promise<void> {
-    if (reqBody.sender_type === SenderType.Bot || !reqBody.text) {
+  static async readMessageAndRespond(reqBody: Message, response: Response): Promise<void> {
+    if (reqBody.sender_type === SenderTypes.Bot || !reqBody.text) {
       response.writeHead(200);
       response.end('Not responding to nonsense');
       return Promise.resolve(); // Don't respond to other bots or empty images
     }
 
-    let responseMsg: string;
     let cleanText = reqBody.text.trim().toLowerCase();
     const command = CommandFactory.getCommand(cleanText);
-    if (command) {
-      try {
-        const results = await command.execute(reqBody);
-        response.writeHead(200);
-        responseMsg = results.text;
-        this.sendBotResponse(results);
-      }
-      catch{
-        response.writeHead(500);
-        responseMsg = `Error executing: ${cleanText}`;
-      }
-    } else {
-      responseMsg = 'No command found';
+
+    if (!command) {
+      response.end('No command found');
+      return;
     }
 
+    let results: BotResponse;
+    let responseMsg: string;
+
+    try {
+      results = await command.execute(reqBody);
+      response.writeHead(200);
+      responseMsg = results.text;
+    }
+    catch (error) {
+      responseMsg = `Error executing: ${cleanText}`;
+      response.writeHead(500, responseMsg);
+      results = new BotResponse(responseMsg);
+      console.log(error);
+    }
+
+    this.sendBotResponse(results);
     response.end(responseMsg);
   }
 
@@ -48,14 +54,22 @@ export class BotTool {
     });
   }
 
-  private static sendBotResponse(responseModel: BotResponseModel) {
+  private static sendBotResponse(responseModel: BotResponse) {
     const reqOptions: RequestOptions = {
       hostname: this.GROUPME_HOSTNAME,
       path: this.GROUPME_PATH,
       method: 'POST'
     };
 
-    const clientReq = request(reqOptions);
+    const clientReq = request(reqOptions, (res) => {
+      let hi = 2;
+    });
+
+    clientReq.on('error', (err) => {
+
+      let hi = 2;
+    })
+
     this.addRequestErrorHandlers(clientReq);
     console.log(`Sending: "${responseModel.text}"`);
     clientReq.end(JSON.stringify(responseModel));

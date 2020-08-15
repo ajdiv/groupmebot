@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { BotResponseModel } from "../../bot/models/botResponseModel";
+import { BotResponse } from '../../bot/botResponse';
 import { CommandCheckLocation } from '../constants/commandCheckLocation';
 import { Command } from "./command";
 
@@ -16,9 +16,9 @@ export class WednesdayCommand implements Command {
     this.dayINeed = 3; // 1 based, Monday is 1 and Sunday is 7
   }
 
-  async execute(): Promise<BotResponseModel> {
+  async execute(): Promise<BotResponse> {
     const result = this.isItWednesday();
-    return new BotResponseModel(result, null);
+    return new BotResponse(result, null);
   }
 
   private isItWednesday(): string {

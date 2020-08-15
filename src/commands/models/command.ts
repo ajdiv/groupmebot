@@ -1,5 +1,5 @@
-import { BotResponseModel } from "../../bot/models/botResponseModel";
-import { GroupmeMessageModel } from "../../models/Groupme/GroupmeMessageModel";
+import { BotResponse } from "../../bot/botResponse";
+import { Message } from "../../groupme/models/message";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 
 export interface Command {
@@ -8,5 +8,5 @@ export interface Command {
   commandCheckLocation: CommandCheckLocation;
   helpText: string;
 
-  execute(botRequestBody: GroupmeMessageModel): Promise<BotResponseModel>;
+  execute(botRequestBody: Message): Promise<BotResponse>;
 }

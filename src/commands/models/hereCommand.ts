@@ -1,6 +1,6 @@
-import { BotResponseModel } from "../../bot/models/botResponseModel";
-import { GroupmeMentionsAttachmentModel } from "../../models/Groupme/GroupmeMentionsAttachmentModel";
-import { GroupmeTool } from "../../tools/groupmeTool";
+import { BotResponse } from "../../bot/botResponse";
+import { GroupmeTool } from "../../groupme/groupmeTool";
+import { MentionsAttachment } from "../../groupme/models/mentionsAttachment";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
 
@@ -40,11 +40,11 @@ export class HereCommand implements Command {
   //     ]
   //   }
   // ]
-  async execute(): Promise<BotResponseModel> {
+  async execute(): Promise<BotResponse> {
     const allGroupMembers = await GroupmeTool.getAllUsersInCurrentGroup();
     this.buildTagProperties(allGroupMembers);
-    const mentionsAttachment = new GroupmeMentionsAttachmentModel(this.lociArray, this.userIds);
-    const result = new BotResponseModel(this.responseText, [mentionsAttachment]);
+    const mentionsAttachment = new MentionsAttachment(this.lociArray, this.userIds);
+    const result = new BotResponse(this.responseText, [mentionsAttachment]);
     return result;
   }
 

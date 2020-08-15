@@ -1,6 +1,6 @@
-import { BotResponseModel } from "../../bot/models/botResponseModel";
-import { GroupmeMessageModel } from "../../models/Groupme/GroupmeMessageModel";
-import { GroupmeTool } from "../../tools/groupmeTool";
+import { BotResponse } from "../../bot/botResponse";
+import { GroupmeTool } from "../../groupme/groupmeTool";
+import { Message } from "../../groupme/models/message";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
 
@@ -13,8 +13,8 @@ export class SpewCommand implements Command {
 
   constructor() { }
 
-  async execute(botRequestBody: GroupmeMessageModel): Promise<BotResponseModel> {
+  async execute(botRequestBody: Message): Promise<BotResponse> {
     const result = await GroupmeTool.addSpew(parseInt(botRequestBody.user_id));
-    return new BotResponseModel(result, null);
+    return new BotResponse(result, null);
   }
 }

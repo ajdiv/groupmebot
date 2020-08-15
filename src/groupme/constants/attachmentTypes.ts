@@ -1,4 +1,4 @@
-export enum GroupmeAttachmentType {
+export enum AttachmentTypes {
   Image = 'image',
   Mentions = 'mentions'
 }

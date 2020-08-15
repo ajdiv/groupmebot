@@ -1,18 +1,18 @@
-import { SenderType } from "../../constants/GroupmeSenderType";
-import { GroupmeAttachmentModel } from "./GroupmeAttachmentModel";
+import { SenderTypes } from "../constants/senderTypes";
+import { Attachment } from "./attachment";
 
-export class GroupmeMessageModel {
+export class Message {
   /** This is the unix time format as provided by GroupMe. Use created_at_date instead */
   private created_at: number;
 
-  public attachments: GroupmeAttachmentModel[];
+  public attachments: Attachment[];
   public avatar_url: string;
   public favorited_by: number[];
   public group_id: number;
   public id: string;
   public name: string;
   public sender_id: string;
-  public sender_type: SenderType;
+  public sender_type: SenderTypes;
   public source_guid: string;
   public system: boolean;
   public text: string;

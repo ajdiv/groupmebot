@@ -1,13 +1,13 @@
-import { GroupmeUserRoles } from "../../constants/GroupmeUserRoles";
+import { UserRoles } from "../constants/userRoles";
 
-export class GroupmeUserModel {
+export class User {
 
   public user_id: string;
   public nickname: string;
   public image_url: string;
   public id: string;
   public muted: boolean;
-  public roles: GroupmeUserRoles[];
+  public roles: UserRoles[];
   public name: string;
 
   constructor() { }

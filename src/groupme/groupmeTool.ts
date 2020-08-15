@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import qs from 'qs';
 import request from 'request-promise';
-import { GroupmeGroupModel } from '../models/Groupme/GroupmeGroupModel';
-import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
-import { GroupmeUserModel } from '../models/Groupme/GroupmeUserModel';
 import Spew from '../models/Mongo/SpewModel';
+import { Group } from './models/group';
+import { Message } from './models/message';
+import { User } from './models/user';
 
 export abstract class GroupmeTool {
 
@@ -27,7 +27,7 @@ export abstract class GroupmeTool {
     return Promise.resolve(`You spewed ${res.spewCount} ${word}`);
   }
 
-  public static async getAllUsersInCurrentGroup(): Promise<GroupmeUserModel[]> {
+  public static async getAllUsersInCurrentGroup(): Promise<User[]> {
     const group = await this.getCurrentGroup();
     const members = group.members;
     return members;
@@ -39,16 +39,16 @@ export abstract class GroupmeTool {
     return message.text;
   }
 
-  public static async getCurrentGroup(): Promise<GroupmeGroupModel> {
+  public static async getCurrentGroup(): Promise<Group> {
     const results = await this.get(null, null);
-    const group: GroupmeGroupModel = Object.assign(new GroupmeGroupModel(), results);
+    const group: Group = Object.assign(new Group(), results);
     return group;
   }
 
   /**
    * @param limit Limits the number of recent messages. Must be between 1 and 100
    */
-  public static async getMessages(limit: number, before_id: string, after_id: string): Promise<GroupmeMessageModel[]> {
+  public static async getMessages(limit: number, before_id: string, after_id: string): Promise<Message[]> {
     if (!limit || limit > 100) return Promise.reject('Limit must be between 1 and 100');
 
     const path = `messages`;
@@ -59,7 +59,7 @@ export abstract class GroupmeTool {
     );
 
     const results = await this.get(path, options);
-    const messages: GroupmeMessageModel[] = _.map(results.messages, x => Object.assign(new GroupmeMessageModel(), x));
+    const messages: Message[] = _.map(results.messages, x => Object.assign(new Message(), x));
     return messages;
   }
 

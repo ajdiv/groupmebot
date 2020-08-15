@@ -1,5 +1,5 @@
-import { BotResponseModel } from "../../bot/models/botResponseModel";
-import { GroupmeTool } from "../../tools/groupmeTool";
+import { BotResponse } from "../../bot/botResponse";
+import { GroupmeTool } from "../../groupme/groupmeTool";
 import { ThesaurusTool } from "../../tools/thesaurusTool";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
@@ -13,9 +13,9 @@ export class ThesaurizeCommand implements Command {
 
   constructor() { }
 
-  async execute(): Promise<BotResponseModel> {
+  async execute(): Promise<BotResponse> {
     const lastText = await GroupmeTool.getLastMessageText();
     const result = await ThesaurusTool.thesaurize(lastText);
-    return new BotResponseModel(result, null);
+    return new BotResponse(result, null);
   }
 }

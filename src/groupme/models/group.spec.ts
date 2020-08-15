@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import { GroupmeGroupModel } from './GroupmeGroupModel';
+import { Group } from './group';
 
 describe('Groupme Group Model Time Tests', () => {
   it('should return a proper created_at_date after setting one', () => {
-    const model = new GroupmeGroupModel();
+    const model = new Group();
     const date = new Date(2020, 6, 14);
 
     // Use the setter to set the private created_at value
@@ -15,7 +15,7 @@ describe('Groupme Group Model Time Tests', () => {
   });
 
   it('should return null created_at_date when setting a null date', () => {
-    const model = new GroupmeGroupModel();
+    const model = new Group();
     const date = null as Date;
 
     // Use the setter to set the private created_at value
@@ -27,7 +27,7 @@ describe('Groupme Group Model Time Tests', () => {
   });
 
   it('should return a proper updated_at_date after setting one', () => {
-    const model = new GroupmeGroupModel();
+    const model = new Group();
     const date = new Date(2020, 6, 14);
 
     // Use the setter to set the private updated_at value
@@ -39,7 +39,7 @@ describe('Groupme Group Model Time Tests', () => {
   });
 
   it('should return null updated_at_date when setting a null date', () => {
-    const model = new GroupmeGroupModel();
+    const model = new Group();
     const date = null as Date;
 
     // Use the setter to set the private created_at value

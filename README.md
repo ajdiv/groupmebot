@@ -12,7 +12,7 @@ Intended to deploy to Heroku
 
 This application is built using Node.js. Please make sure you have node/npm installed ([how-to install node/npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)). After cloning/pulling from this repository, ensure you run "npm install" to stay up to date with the latest packages.
 
-We use an env file to record different variables that are unique to each GroupMe chat - and is gitignored. We have an env.sample file (in the config folder) that you should be able to copy/paste and remove the ".sample" from. See the [Environment File](#env) section for specifics.
+We use an env file to record different variables that are unique to each GroupMe chat - and is gitignored. We have a .env.sample file (in the config folder) that you should be able to copy/paste and remove the ".sample" from. See the [Environment File](#env) section for specifics.
 
 Testing requests can be used with Postman. All messages from GroupMe are sent as POST requests, but this API also accepts GETs as well (currently only for testing).
 

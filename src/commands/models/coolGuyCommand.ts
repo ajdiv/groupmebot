@@ -1,4 +1,4 @@
-import { BotResponseModel } from "../../bot/models/botResponseModel";
+import { BotResponse } from "../../bot/botResponse";
 import { CommandCheckLocation } from "../constants/commandCheckLocation";
 import { Command } from "./command";
 
@@ -13,8 +13,9 @@ export class CoolGuyCommand implements Command {
 
   constructor() { }
 
-  execute(): Promise<BotResponseModel> {
+  execute(): Promise<BotResponse> {
     const result = cool();
-    return Promise.resolve(new BotResponseModel(result, null));
+    throw new Error('Test');
+    return Promise.resolve(new BotResponse(result, null));
   }
 }

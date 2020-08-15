@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import { SenderType } from '../constants/GroupmeSenderType';
-import { GroupmeMessageModel } from '../models/Groupme/GroupmeMessageModel';
+import { SenderTypes } from '../groupme/constants/senderTypes';
+import { GroupmeTool } from '../groupme/groupmeTool';
+import { Message } from '../groupme/models/message';
 import { UserStatsModel } from '../models/UserStatsModel';
 import { DateUtilities } from '../utilities/dateUtilities';
-import { GroupmeTool } from './groupmeTool';
 
 export abstract class AwardsTool {
 
@@ -17,8 +17,8 @@ export abstract class AwardsTool {
     let beforeId = null;
     let userStatsArr: UserStatsModel[] = [];
     while (keepLooping) {
-      let messages = await GroupmeTool.getMessages(100, beforeId, null) as GroupmeMessageModel[];
-      messages = _.filter(messages, x => x.sender_type != SenderType.Bot);
+      let messages = await GroupmeTool.getMessages(100, beforeId, null) as Message[];
+      messages = _.filter(messages, x => x.sender_type != SenderTypes.Bot);
       _.each(messages, message => {
         if (message.created_at_date <= begin) {
           keepLooping = false;
