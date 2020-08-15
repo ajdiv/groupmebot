@@ -1,57 +1,38 @@
-import { Response } from 'express';
-import { ClientRequest } from 'http';
 import { request, RequestOptions } from 'https';
 import { CommandFactory } from '../commands/commandFactory';
 import { SenderTypes } from '../groupme/constants/senderTypes';
 import { Message } from '../groupme/models/message';
 import { BotResponse } from './botResponse';
 
-export class BotTool {
+
+export abstract class BotTool {
 
   private static readonly GROUPME_HOSTNAME: string = 'api.groupme.com';
   private static readonly GROUPME_PATH: string = '/v3/bots/post';
 
-  static async readMessageAndRespond(reqBody: Message, response: Response): Promise<void> {
-    if (reqBody.sender_type === SenderTypes.Bot || !reqBody.text) {
-      response.writeHead(200);
-      response.end('Not responding to nonsense');
-      return Promise.resolve(); // Don't respond to other bots or empty images
-    }
+  static async readMessageAndRespond(reqBody: Message): Promise<string> {
+    // Don't respond to other bots or empty images
+    if (reqBody.sender_type === SenderTypes.Bot || !reqBody.text) return 'No text to read';
 
     let cleanText = reqBody.text.trim().toLowerCase();
     const command = CommandFactory.getCommand(cleanText);
-
-    if (!command) {
-      response.end('No command found');
-      return;
-    }
+    if (!command) return 'No command found';
 
     let results: BotResponse;
     let responseMsg: string;
 
     try {
       results = await command.execute(reqBody);
-      response.writeHead(200);
       responseMsg = results.text;
     }
     catch (error) {
       responseMsg = `Error executing: ${cleanText}`;
-      response.writeHead(500, responseMsg);
       results = new BotResponse(responseMsg);
       console.log(error);
     }
 
     this.sendBotResponse(results);
-    response.end(responseMsg);
-  }
-
-  private static addRequestErrorHandlers(clientReq: ClientRequest) {
-    clientReq.on('error', function (err: any) {
-      console.log('error posting message ' + JSON.stringify(err));
-    });
-    clientReq.on('timeout', function (err: any) {
-      console.log('timeout posting message ' + JSON.stringify(err));
-    });
+    return responseMsg;
   }
 
   private static sendBotResponse(responseModel: BotResponse) {
@@ -61,17 +42,15 @@ export class BotTool {
       method: 'POST'
     };
 
-    const clientReq = request(reqOptions, (res) => {
-      let hi = 2;
+    const clientReq = request(reqOptions);
+
+    clientReq.on('error', (err: any) => {
+      console.log('Error posting message to GroupMe: ' + JSON.stringify(err));
+    });
+    clientReq.on('timeout', function (err: any) {
+      console.log('Timeout posting message to GroupMe: ' + JSON.stringify(err));
     });
 
-    clientReq.on('error', (err) => {
-
-      let hi = 2;
-    })
-
-    this.addRequestErrorHandlers(clientReq);
-    console.log(`Sending: "${responseModel.text}"`);
     clientReq.end(JSON.stringify(responseModel));
   };
 }

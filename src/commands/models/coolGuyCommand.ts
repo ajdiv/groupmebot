@@ -15,7 +15,6 @@ export class CoolGuyCommand implements Command {
 
   execute(): Promise<BotResponse> {
     const result = cool();
-    throw new Error('Test');
     return Promise.resolve(new BotResponse(result, null));
   }
 }

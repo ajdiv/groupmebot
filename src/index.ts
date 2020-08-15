@@ -28,9 +28,12 @@ app.listen(port, () => {
 });
 
 // Define REST Methods
-app.post('/', function (req: express.Request, res: express.Response): Promise<void> {
+app.post('/', async (req: express.Request, res: express.Response): Promise<void> => {
   const rawJson = JSON.stringify(req.body);
   console.log('Received: ' + rawJson);
   let requestModel: Message = Object.assign(new Message(), req.body);
-  return BotTool.readMessageAndRespond(requestModel, res);
+  res.writeHead(200);
+  let responseText = await BotTool.readMessageAndRespond(requestModel);
+  console.log(`Sending: ${responseText}`);
+  res.end(responseText);
 });
