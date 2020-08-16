@@ -39,8 +39,6 @@ describe('Bot Tool Tests', () => {
         return Promise.resolve(testCommandResult)
       }
     };
-
-    //axiosStub = new MockAdapter(axios);
   })
 
   afterEach(() => {
