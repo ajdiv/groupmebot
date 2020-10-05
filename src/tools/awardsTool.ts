@@ -18,7 +18,7 @@ export abstract class AwardsTool {
     let userStatsArr: UserStatsModel[] = [];
     while (keepLooping) {
       let messages = await GroupmeTool.getMessages(100, beforeId, null) as GroupmeMessageModel[];
-      messages = _.filter(messages, x => x.sender_type != SenderType.Bot);
+      messages = _.filter(messages, x => x.sender_type != SenderType.Bot && !x.system);
       _.each(messages, message => {
         if (message.created_at_date <= begin) {
           keepLooping = false;
@@ -30,7 +30,8 @@ export abstract class AwardsTool {
           userStatsArr.push(user);
         }
         user.messageCount++;
-        user.likeCount += message.favorited_by.length;
+        let likedBy = _.filter(message.favorited_by, x => x.toString() !== user.user_id);
+        user.likeCount += likedBy.length;
 
         beforeId = message.id;
         return undefined; //continue
