@@ -7,7 +7,7 @@ import { Command } from "./command";
 
 export class HereCommand implements Command {
 
-  commandText = ['@here'];
+  commandText = ['@here', '@all'];
   commandCheckLocation = CommandCheckLocation.Contains;
   helpText = 'notifies everyone in the group, regardless of their mute settings';
 
