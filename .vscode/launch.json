@@ -17,6 +17,16 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Run Jobs",
+      "program": "${workspaceFolder}\\dist\\jobRunner.js",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Run Tests",
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "args": [

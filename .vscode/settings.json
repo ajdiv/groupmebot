@@ -2,5 +2,9 @@
   "cSpell.words": [
     "by",
     "favorited"
+  ],
+  "cSpell.ignoreWords": [
+    "eventdate",
+    "eventname"
   ]
 }
