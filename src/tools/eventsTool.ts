@@ -70,6 +70,22 @@ export class EventsTool {
     '"/events past" shows all past events'
   }
 
+  public static async getTodaysEvents(): Promise<string> {
+    let today = new Date();
+    today.setHours(0,0,0,0);
+    let todaysEvents  = await CustomEventModel.find({ eventDate: { $eq: today } });
+
+    if(todaysEvents.length === 0) return null;
+
+    let result = '';
+    for(let i = 0; i < todaysEvents.length; i++){
+      let item = todaysEvents[i];
+      result += item.eventName + ': ' + item.eventDate.toLocaleDateString();
+      if(i !== todaysEvents.length - 1) result += '\n';
+    }
+    return result;
+  }
+
   private static parseEventDate(str: string): Date {
     str = str.trim();
     let strArr = str.split(' ');

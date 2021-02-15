@@ -48,16 +48,20 @@ export class Bot {
     });
   }
 
-  public static sendBotResponse(responseModel: BotResponseModel) {
+  public static sendBotResponse(responseModel: BotResponseModel): Promise<void> {
     const reqOptions: RequestOptions = {
       hostname: this.GROUPME_HOSTNAME,
       path: this.GROUPME_PATH,
       method: 'POST'
     };
 
-    const clientReq = request(reqOptions);
-    this.addRequestErrorHandlers(clientReq);
-    console.log(`Sending: "${responseModel.text}"`);
-    clientReq.end(JSON.stringify(responseModel));
+    return new Promise((resolve: any, reject: any) => {
+      const clientReq = request(reqOptions, (res: any) => {
+        return resolve();
+      });
+      this.addRequestErrorHandlers(clientReq);
+      console.log(`Sending: "${responseModel.text}"`);
+      clientReq.end(JSON.stringify(responseModel));
+    })
   };
 }
