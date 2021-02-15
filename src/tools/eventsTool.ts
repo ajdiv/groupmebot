@@ -63,6 +63,13 @@ export class EventsTool {
     return result;
   }
 
+  public static getHelpText(): string{
+    return 'Event Commands: \n' +
+    '"/events add EVENTNAME EVENTDATE" adds a new event \n' +
+    '"/events list" shows all upcoming events \n'+
+    '"/events past" shows all past events'
+  }
+
   private static parseEventDate(str: string): Date {
     str = str.trim();
     let strArr = str.split(' ');

@@ -20,13 +20,16 @@ export abstract class EventCommand implements Command {
 
   private async executeEventType(botRequestBody: GroupmeMessageModel): Promise<string> {
     let text = botRequestBody.text;
-    if (text.includes('add')) {
+    if(text.includes('help')){
+      return EventsTool.getHelpText();
+    }
+    else if (text.includes('add')) {
       return await EventsTool.addEvent(botRequestBody.user_id, botRequestBody.group_id, text);
     } else if (text.includes('list')) {
       return await EventsTool.getAllUpcomingEvents();
     } else if (text.includes('past')) {
       return await EventsTool.getAllPastEvents();
     }
-    else return Promise.resolve('Unknown event command');
+    else return Promise.resolve('Unknown event command. Type /events help for all commands');
   }
 }
