@@ -7,9 +7,9 @@ import { Command } from "./command";
 
 export abstract class EventCommand implements Command {
 
-  commandText = ['/event'];
+  commandText = ['/events'];
   commandCheckLocation = CommandCheckLocation.Start;
-  helpText = 'manage events. Type /event help for more info';
+  helpText = 'manage events. Type /events help for more info';
 
   constructor() { }
 
@@ -22,6 +22,10 @@ export abstract class EventCommand implements Command {
     let text = botRequestBody.text;
     if (text.includes('add')) {
       return await EventsTool.addEvent(botRequestBody.user_id, botRequestBody.group_id, text);
+    } else if (text.includes('list')) {
+      return await EventsTool.getAllUpcomingEvents();
+    } else if (text.includes('past')) {
+      return await EventsTool.getAllPastEvents();
     }
     else return Promise.resolve('Unknown event command');
   }
