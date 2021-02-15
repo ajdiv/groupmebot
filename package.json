@@ -7,7 +7,8 @@
     "start": "node dist/index.js",
     "test": "ts-mocha src/**/*.spec.ts",
     "prestart": "npm run build",
-    "build": "tsc"
+    "build": "tsc",
+    "jobs":"node dist/jobRunner.js"
   },
   "dependencies": {
     "@types/body-parser": "^1.19.0",

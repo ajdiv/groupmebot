@@ -48,7 +48,7 @@ export class Bot {
     });
   }
 
-  private static sendBotResponse(responseModel: BotResponseModel) {
+  public static sendBotResponse(responseModel: BotResponseModel) {
     const reqOptions: RequestOptions = {
       hostname: this.GROUPME_HOSTNAME,
       path: this.GROUPME_PATH,
