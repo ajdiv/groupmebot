@@ -37,3 +37,10 @@ app.post('/', function (req: express.Request, res: express.Response): Promise<vo
   let requestModel: GroupmeMessageModel = Object.assign(new GroupmeMessageModel(), req.body);
   return Bot.respond(requestModel, res);
 });
+
+// Define REST Methods
+app.get('/', function(req, res) {
+  res.json({
+    number: 1
+  });
+});
