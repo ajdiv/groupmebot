@@ -1,7 +1,7 @@
 
 import { urlencoded } from 'body-parser';
 import express from 'express';
-import { connect, connection } from 'mongoose';
+import { connect } from 'mongoose';
 import path from 'path';
 import { Bot } from './bot';
 import { GroupmeMessageModel } from './models/Groupme/GroupmeMessageModel';
@@ -14,21 +14,26 @@ if (process.env.NODE_ENV !== "production") {
   if(error) console.error(error);
 }
 
-// Configure DB
-const mongoDB = process.env.MONGODB_URI;
-if (!mongoDB) throw Error('Missing MONGODB_URI in env file');
-connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-const db = connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-// Configure Web Server
 const app = express();
 app.use(urlencoded({ extended: false }))
 app.use(express.json())
-const port = Number(process.env.PORT || 5000);
-app.listen(port, () => {
-  console.log(`Server is running on PORT: ${port}`);
-});
+
+// Configure DB
+// const mongoDB = process.env.MONGODB_URI;
+// if (!mongoDB) throw Error('Missing MONGODB_URI in env file');
+// connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+// const db = connection;
+// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+const connectDB = async () => {
+  try {
+    const conn = await connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
 
 // Define REST Methods
 app.post('/', function (req: express.Request, res: express.Response): Promise<void> {
@@ -44,3 +49,11 @@ app.get('/', function(req, res) {
     number: 1
   });
 });
+
+// Configure Web Server
+const port = Number(process.env.PORT || 5000);
+connectDB().then(() => {
+  app.listen(port, () => {
+    console.log(`Server is running on PORT: ${port}`);
+  })
+})
